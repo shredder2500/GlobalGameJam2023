@@ -13,8 +13,6 @@ Entities are nothing but Ids. They must not directly contain any data or logic.
 Should only be used to reference components
 ### Components
 Components are pure data, should not contain any logic. 
-In order to optimize data layout and cpu caching they must be Blittable. 
-To help drive this I will implement them as `record structs` and enforce the `unmanged` constraint on generics.
 ### Systems
 Systems are where all the logic will be. in a system you can query entities and their components to run some logic.
 Systems will run in asyc to each other and allow running logic in async batches against if needed.
