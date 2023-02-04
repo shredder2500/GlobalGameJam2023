@@ -8,6 +8,7 @@ using JasperFx.Core;
 using Lamar.Microsoft.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Silk.NET.Input;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 
@@ -26,6 +27,7 @@ public static class HostBuilderExts
         return builder.ConfigureServices((_, services) =>
         {
             services.AddSingleton<IWindow>(window);
+            services.AddSingleton(window.CreateInput());
         });
     }
 
