@@ -26,4 +26,9 @@
       <ProjectReference Include="..\GameJam.Engine\GameJam.Engine.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Resources\*" />
+      <EmbeddedResource Include="Resources\*" />
+    </ItemGroup>
+
 </Project>

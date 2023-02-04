@@ -1,4 +1,6 @@
+using System.Drawing;
 using Microsoft.Extensions.Hosting;
+using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 
 namespace GameJam.Engine;
@@ -25,24 +27,30 @@ internal class WindowLifetime : IHostedService
     public Task StartAsync(CancellationToken _)
     {
         
-        _gameLoop = Task.Run(async () =>
+        _gameLoop = Task.Run(() =>
         {
             _window.Initialize();
-            while (!_window.IsClosing)
-            {
+            var gl = GL.GetApi(_window);
+            gl.Enable(GLEnum.Blend);
+            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            gl.ClearColor(Color.Aqua);
+            _window.Run(() => {
                 _gameTime.Update();
-
                 _window.DoEvents();
-                if (_window.IsClosing) continue;
-                _window.DoUpdate();
-                await _worldManager.Update(_appLifetime.ApplicationStopping);
-                await _worldManager.Sim(_appLifetime.ApplicationStopping);
-
-                await _worldManager.Render(_appLifetime.ApplicationStopping);
-                _window.DoRender();
-                _window.Run();
-            }
+                _worldManager.Update(_appLifetime.ApplicationStopping)
+                    .AsTask()
+                    .Wait(_appLifetime.ApplicationStopping);
+                _worldManager.Sim(_appLifetime.ApplicationStopping)
+                    .AsTask()
+                    .Wait(_appLifetime.ApplicationStopping);
+                gl.Clear(ClearBufferMask.ColorBufferBit);
+                _worldManager.Render(_appLifetime.ApplicationStopping)
+                    .AsTask()
+                    .Wait(_appLifetime.ApplicationStopping);
+                _window.SwapBuffers();
+            });
             _host.StopApplication();
+            
         }, _appLifetime.ApplicationStopping);
             return Task.CompletedTask;
     }
