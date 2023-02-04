@@ -28,7 +28,7 @@ public class InitSystem : IHostedService
             world.SetComponent(entity, new SpriteLayer(0, 0));
 
             var camEntity = world.CreateEntity();
-            world.SetComponent(camEntity, new Camera(5));
+            world.SetComponent(camEntity, new Camera(144));
             world.SetComponent(camEntity, new Position(new Vector2D<int>(0, 0)));
         };
     }

@@ -94,7 +94,7 @@ internal unsafe class EntityBucket : IEntityBucket, IDisposable
         var typeSize = _componentSizes[typeIdx];
         var targetPtr = (byte*)_components[typeIdx] + typeSize * (nuint)entityIdx;
         
-        // NativeMemory.Copy(componentPtr, targetPtr, typeSize);
+        NativeMemory.Copy(componentPtr, targetPtr, typeSize);
     }
 
     public void RemoveEntity(Entity entity)
