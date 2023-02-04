@@ -18,14 +18,12 @@ internal class World : IWorld
 
     public void SetComponent<T>(Entity entity, T value) where T : unmanaged
     {
-        var record = _entityBucketMap[entity];
-        _actionQueue.Enqueue(new SetComponentAction<T>(record, value, _entityBuckets, _entityBucketMap), 1);
+        _actionQueue.Enqueue(new SetComponentAction<T>(entity, value, _entityBuckets, _entityBucketMap), 1);
     }
 
     public void RemoveComponent<T>(Entity entity, T value) where T : unmanaged
     {
-        var record = _entityBucketMap[entity];
-        _actionQueue.Enqueue(new RemoveComponentAction<T>(record, _entityBuckets, _entityBucketMap), 2);
+        _actionQueue.Enqueue(new RemoveComponentAction<T>(entity, _entityBuckets, _entityBucketMap), 2);
     }
 
     public void DestroyEntity(Entity entity)

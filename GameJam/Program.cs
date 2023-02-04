@@ -1,4 +1,6 @@
-﻿using Lamar.Microsoft.DependencyInjection;
+﻿using GameJam;
+using Lamar.Microsoft.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
@@ -9,6 +11,7 @@ static IHostBuilder CreateHostBuilder() =>
     Host.CreateDefaultBuilder()
         .UseWindow(new (800, 600), "I am Groot!")
         .UseEcs()
+        .ConfigureServices(services => services.AddHostedService<InitSystem>())
         .UseSerilog((_, _, loggerConfiguration) =>
         {
             loggerConfiguration

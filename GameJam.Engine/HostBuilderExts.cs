@@ -1,9 +1,14 @@
 using System.Collections.Immutable;
 using System.Drawing;
+using GameJam.Engine.Rendering;
+using GameJam.Engine.Rendering.Systems;
+using GameJam.Engine.Resources;
+using GameJam.Engine.Resources.Loaders;
 using JasperFx.Core;
 using Lamar.Microsoft.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 
 namespace GameJam.Engine;
@@ -15,7 +20,8 @@ public static class HostBuilderExts
         var window = Window.Create(WindowOptions.Default with
         {
             Size = new(windowSize.Width, windowSize.Height),
-            Title = title
+            Title = title,
+            IsEventDriven = false
         });
         return builder.ConfigureServices((_, services) =>
         {
@@ -27,15 +33,24 @@ public static class HostBuilderExts
     {
         return builder.UseLamar(services =>
         {
+            AddResource<Texture, TextureLoader>();
+            AddResource<Shader, ShaderLoader>();
+            
+            services.AddSingleton<IResourceManager, ResourceManager>();
             services.AddSingleton<IWorldManager, WorldManager>();
             services.AddScoped<IWorld, World>();
             services.AddSingleton<IGameTime, GameTime>();
             services.AddHostedService<WindowLifetime>();
-            services.Scan(x =>
+            services.AddSingleton<IRenderQueue, RenderQueue>();
+            services.AddSingleton<IMainThreadDispatcher, MainThreadDispatcher>();
+
+            services.AddScoped<ISystem, Render2DSystem>();
+
+            void AddResource<T, TLoader>() where TLoader : class, IResourceLoader<T>
             {
-                x.AssembliesFromApplicationBaseDirectory();
-                x.AddAllTypesOf<ISystem>(ServiceLifetime.Scoped);
-            });
+                services.AddSingleton<IResourceCache<T>, ResourceCache<T>>();
+                services.AddSingleton<IResourceLoader<T>, TLoader>();
+            }
         });
     }
 }

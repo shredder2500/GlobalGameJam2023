@@ -4,7 +4,7 @@ public interface IEntityBucket
 {
     public IEnumerable<Type> ComponentTypes { get; }
     public bool HasComponent<T>() where T : unmanaged;
-    public T GetComponent<T>(int entityIdx) where T : unmanaged;
+    public T? GetComponent<T>(int entityIdx) where T : unmanaged;
     public IEnumerable<int> GetIndices();
     public Entity GetEntity(int entityIdx);
 

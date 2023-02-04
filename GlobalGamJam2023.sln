@@ -7,10 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameJam", "GameJam\GameJam.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameJam.Engine", "GameJam.Engine\GameJam.Engine.csproj", "{FDCA2426-9E62-4FE4-9F46-69B7CDE5B4C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameJam.Engine.Tests", "GameJam.Engine.Tests\GameJam.Engine.Tests.csproj", "{711AA6F3-43CD-4D2E-8759-1ED76673B635}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameJam.Tests", "GameJam.Tests\GameJam.Tests.csproj", "{9D01A182-CC73-49AF-9DB3-E8EB91B5ADA9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,13 +24,5 @@ Global
 		{FDCA2426-9E62-4FE4-9F46-69B7CDE5B4C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDCA2426-9E62-4FE4-9F46-69B7CDE5B4C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDCA2426-9E62-4FE4-9F46-69B7CDE5B4C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{711AA6F3-43CD-4D2E-8759-1ED76673B635}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{711AA6F3-43CD-4D2E-8759-1ED76673B635}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{711AA6F3-43CD-4D2E-8759-1ED76673B635}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{711AA6F3-43CD-4D2E-8759-1ED76673B635}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9D01A182-CC73-49AF-9DB3-E8EB91B5ADA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9D01A182-CC73-49AF-9DB3-E8EB91B5ADA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9D01A182-CC73-49AF-9DB3-E8EB91B5ADA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9D01A182-CC73-49AF-9DB3-E8EB91B5ADA9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

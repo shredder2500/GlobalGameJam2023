@@ -2,22 +2,23 @@ namespace GameJam.Engine;
 
 internal class RemoveComponentAction<T> : IEntityAction where T : unmanaged
 {
-    private readonly EntityRecord _entityRecord;
+    private readonly Entity _entity;
     private readonly IList<IEntityBucket> _entityBuckets;
     private readonly IDictionary<Entity, EntityRecord> _entityRecords;
 
-    public RemoveComponentAction(EntityRecord entityRecord, IList<IEntityBucket> entityBuckets, IDictionary<Entity, EntityRecord> entityRecords)
+    public RemoveComponentAction(Entity entity, IList<IEntityBucket> entityBuckets, IDictionary<Entity, EntityRecord> entityRecords)
     {
-        _entityRecord = entityRecord;
+        _entity = entity;
         _entityBuckets = entityBuckets;
         _entityRecords = entityRecords;
     }
 
     public void Execute()
     {
-        if (_entityRecord.Bucket == null) return;
+        var entityRecord = _entityRecords[_entity];
+        if (entityRecord.Bucket == null) return;
         
-        var archetype = _entityRecord.Bucket.ComponentTypes
+        var archetype = entityRecord.Bucket.ComponentTypes
             .Where(x => x != typeof(T))
             .OrderBy(x => x.Name)
             .ToArray();
@@ -25,9 +26,9 @@ internal class RemoveComponentAction<T> : IEntityAction where T : unmanaged
         var bucket = _entityBuckets.FirstOrDefault(x => x.ComponentTypes.SequenceEqual(archetype))
                      ?? NewBucket(archetype);
 
-        var newEntityIdx = _entityRecord.Bucket.MoveTo(bucket, _entityRecord.entityIdx);
+        var newEntityIdx = entityRecord.Bucket.MoveTo(bucket, entityRecord.entityIdx);
 
-        _entityRecords[_entityRecord.Entity] = _entityRecord with
+        _entityRecords[entityRecord.Entity] = entityRecord with
         {
             Bucket = bucket,
             entityIdx = newEntityIdx

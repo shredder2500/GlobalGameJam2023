@@ -39,9 +39,12 @@ internal unsafe class EntityBucket : IEntityBucket, IDisposable
 
     public IEnumerable<int> GetIndices() => _indices;
 
-    public T GetComponent<T>(int entityIdx) where T : unmanaged
+    public T? GetComponent<T>(int entityIdx) where T : unmanaged
     {
         var typeIdx = GetTypeIdx<T>();
+
+        if (typeIdx == -1) return null;
+        
         var ptr = (T*)_components[typeIdx];
 
         return ptr[entityIdx];
@@ -63,6 +66,7 @@ internal unsafe class EntityBucket : IEntityBucket, IDisposable
     public void SetComponent<T>(int entityIdx, T value) where T : unmanaged
     {
         var typeIdx = GetTypeIdx<T>();
+        if (typeIdx == -1) throw new InvalidOperationException("Invalid type when setting component on bucket");
         var ptr = (T*)_components[typeIdx];
         ptr[entityIdx] = value;
     }
@@ -90,7 +94,7 @@ internal unsafe class EntityBucket : IEntityBucket, IDisposable
         var typeSize = _componentSizes[typeIdx];
         var targetPtr = (byte*)_components[typeIdx] + typeSize * (nuint)entityIdx;
         
-        NativeMemory.Copy(componentPtr, targetPtr, typeSize);
+        // NativeMemory.Copy(componentPtr, targetPtr, typeSize);
     }
 
     public void RemoveEntity(Entity entity)
@@ -110,12 +114,7 @@ internal unsafe class EntityBucket : IEntityBucket, IDisposable
     // for the jam the I am planning to query using Linq
     private int GetTypeIdx<T>() => GetTypeIdx(typeof(T));
 
-    public int GetTypeIdx(Type type)
-    {
-        var idx = Array.IndexOf(_componentTypes, type);
-        if (idx == -1) throw new InvalidOperationException($"Bucket does not contain {type}");
-        return idx;
-    }
+    public int GetTypeIdx(Type type) => Array.IndexOf(_componentTypes, type);
 
     // Future optimization: Use array pool for Entities array and create a pool to reuse component Pointers to reduce allocations
     private void EnsureCapacity()

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace GameJam.Engine;
 
@@ -9,10 +10,12 @@ public class WorldManager : IWorldManager
     private IEnumerable<ISystem> _renderSystems;
     private readonly List<IWorld> _worlds;
     private readonly IServiceProvider _services;
+    private readonly ILogger _logger;
 
-    public WorldManager(IServiceProvider services)
+    public WorldManager(IServiceProvider services, ILogger<WorldManager> logger)
     {
         _services = services;
+        _logger = logger;
         _updateSystems = ArraySegment<ISystem>.Empty;
         _simSystems = ArraySegment<ISystem>.Empty;
         _renderSystems = ArraySegment<ISystem>.Empty;
@@ -29,7 +32,9 @@ public class WorldManager : IWorldManager
 
         void GetSystems()
         {
-            var allSystems = scope!.ServiceProvider.GetRequiredService<IEnumerable<ISystem>>().ToArray();
+            var allSystems = scope!.ServiceProvider.GetRequiredService<IEnumerable<ISystem>>().ToList();
+            _logger.LogInformation("Adding {NumberOfSystems} Systems", allSystems.Count);
+            allSystems.ForEach(s => _logger.LogInformation("Adding System: {SystemName}", s.GetType().Name));
             _updateSystems = _updateSystems.Concat(allSystems.Where(x => x.Phase == GamePhase.Update).ToArray());
             _simSystems = _simSystems.Concat(allSystems.Where(x => x.Phase == GamePhase.Simulation).ToArray());
             _renderSystems = _renderSystems.Concat(allSystems.Where(x => x.Phase == GamePhase.Presentation).ToArray());

@@ -1,3 +1,6 @@
-﻿namespace GameJam.Engine.Rendering.Components; 
+﻿using System.Numerics;
+using Silk.NET.OpenGL;
 
-public record struct Sprite();
+namespace GameJam.Engine.Rendering.Components; 
+
+public record struct Sprite(Texture Texture, Vector4 Uv);
