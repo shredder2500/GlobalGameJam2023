@@ -7,4 +7,23 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Lamar.Microsoft.DependencyInjection" Version="10.0.1" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
+      <PackageReference Include="Serilog" Version="2.12.0" />
+      <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
+      <PackageReference Include="Serilog.Extensions.Hosting" Version="5.0.1" />
+      <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
+      <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+      <PackageReference Include="Silk.NET.Core" Version="2.16.0" />
+      <PackageReference Include="Silk.NET.GLFW" Version="2.16.0" />
+      <PackageReference Include="Silk.NET.Input.Common" Version="2.16.0" />
+      <PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\GameJam.Engine\GameJam.Engine.csproj" />
+    </ItemGroup>
+
 </Project>

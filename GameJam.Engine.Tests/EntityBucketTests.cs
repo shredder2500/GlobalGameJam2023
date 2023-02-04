@@ -92,7 +92,7 @@ public class EntityBucketTests
     {
         using var bucket = new EntityBucket(new[] { typeof(TestComponentA) });
     
-        for (var i = 0; i < EntityBucket.InitSize; i++)
+        for (var i = 0u; i < EntityBucket.InitSize; i++)
         {
             bucket.AddEntity(new(i));
         }
@@ -107,7 +107,7 @@ public class EntityBucketTests
         var entityIdx = bucket.AddEntity(new(30));
         bucket.SetComponent(entityIdx, new TestComponentA(20));
 
-        for (var i = 0; i < EntityBucket.InitSize; i++)
+        for (var i = 0u; i < EntityBucket.InitSize; i++)
         {
             bucket.AddEntity(new(i));
         }

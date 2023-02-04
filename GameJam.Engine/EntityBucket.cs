@@ -13,6 +13,8 @@ internal unsafe class EntityBucket : IEntityBucket, IDisposable
     private Entity[] _entities;
     private void*[] _components;
 
+    public IEnumerable<Type> ComponentTypes => _componentTypes;
+
     public EntityBucket(Type[] componentTypes)
     {
         _componentTypes = componentTypes;
@@ -65,20 +67,53 @@ internal unsafe class EntityBucket : IEntityBucket, IDisposable
         ptr[entityIdx] = value;
     }
 
+    public int MoveTo(IEntityBucket otherBucket, int entityIdx)
+    {
+        var targetIdx = otherBucket.AddEntity(GetEntity(entityIdx));
+
+        for (var i = 0; i < _componentTypes.Length; i++)
+        {
+            if (!otherBucket.ComponentTypes.Contains(_componentTypes[i])) continue;
+            
+            var ptr = (byte*)_components[i] + _componentSizes[i] * (nuint)entityIdx;
+            CopyComponent(ptr, _componentTypes[i], targetIdx);
+        }
+        
+        RemoveEntity(entityIdx);
+
+        return targetIdx;
+    }
+
+    public void CopyComponent(void* componentPtr, Type componentType, int entityIdx)
+    {
+        var typeIdx = GetTypeIdx(componentType);
+        var typeSize = _componentSizes[typeIdx];
+        var targetPtr = (byte*)_components[typeIdx] + typeSize * (nuint)entityIdx;
+        
+        NativeMemory.Copy(componentPtr, targetPtr, typeSize);
+    }
+
     public void RemoveEntity(Entity entity)
     {
         var idx = Array.IndexOf(_entities, entity);
+        RemoveEntity(idx);
+    }
+
+    public void RemoveEntity(int idx)
+    {
         _indices.Remove(idx);
         _nextIdx.Enqueue(idx, idx);
     }
-    
+
     // Future optimization: figure out how to cache this instead of looking it up every time
     // Current thought is I would offload tracking the type idx to some querying logic. but that is out of scope for the jam
     // for the jam the I am planning to query using Linq
-    private int GetTypeIdx<T>()
+    private int GetTypeIdx<T>() => GetTypeIdx(typeof(T));
+
+    public int GetTypeIdx(Type type)
     {
-        var idx = Array.IndexOf(_componentTypes, typeof(T));
-        if (idx == -1) throw new InvalidOperationException($"Bucket does not contain {typeof(T)}");
+        var idx = Array.IndexOf(_componentTypes, type);
+        if (idx == -1) throw new InvalidOperationException($"Bucket does not contain {type}");
         return idx;
     }
 
