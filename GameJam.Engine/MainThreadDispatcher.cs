@@ -11,7 +11,6 @@ internal class MainThreadDispatcher : IMainThreadDispatcher
 
     public void Execute()
     {
-        Console.WriteLine($"Executing {_actions.Count} actions");
         while (_actions.TryDequeue(out var action))
             action();
     }

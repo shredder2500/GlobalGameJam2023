@@ -32,6 +32,12 @@ internal class World : IWorld
         _actionQueue.Enqueue(new DestroyEntityAction(record, _entityBucketMap), 3);
     }
 
+    public T? GetComponent<T>(Entity entity) where T : unmanaged
+    {
+        var record = _entityBucketMap[entity];
+        return record.Bucket?.GetComponent<T>(record.entityIdx);
+    }
+
     public void Sync()
     {
         while (_actionQueue.TryDequeue(out var action, out _))

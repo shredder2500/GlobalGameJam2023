@@ -112,7 +112,7 @@ internal class RenderQueue : IRenderQueue
                 SetMatrix(_uViewLocation, view);
                 SetMatrix(_uProjectionLocation, projection);
     
-                var model = Matrix4x4.Identity * Matrix4x4.CreateScale(size.X, size.Y, 1) * Matrix4x4.CreateRotationZ(DegreesToRadians(rot)) * Matrix4x4.CreateTranslation(position.X, position.Y, 0);
+                var model = Matrix4x4.Identity * Matrix4x4.CreateScale(size.X, size.Y, 1) * Matrix4x4.CreateRotationZ(DegreesToRadians(rot)) * Matrix4x4.CreateTranslation(pos.X, pos.Y, 0);
                 SetMatrix(_uModelLocation, model);
     
                 _gl.DrawElements(PrimitiveType.Triangles, (uint) Indices.Length, DrawElementsType.UnsignedInt, null);

@@ -80,7 +80,7 @@ internal unsafe class EntityBucket : IEntityBucket, IDisposable
             if (!otherBucket.ComponentTypes.Contains(_componentTypes[i])) continue;
             
             var ptr = (byte*)_components[i] + _componentSizes[i] * (nuint)entityIdx;
-            CopyComponent(ptr, _componentTypes[i], targetIdx);
+            otherBucket.CopyComponent(ptr, _componentTypes[i], targetIdx);
         }
         
         RemoveEntity(entityIdx);
