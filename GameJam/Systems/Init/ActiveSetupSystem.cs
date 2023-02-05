@@ -35,6 +35,11 @@ public class ActiveSetupSystem : ISystem, IDisposable
         _world.SetComponent(initActive, new Selector());
         _world.SetComponent(initActive, new Animation(_spriteSheet, 87, 88));
         _world.SetComponent(initActive, new LoopAnimation());
+
+        var textEntity = _world.CreateEntity();
+        _world.SetComponent(textEntity, new Position(new(0, 0)));
+        _world.SetComponent(textEntity, new SpriteLayer(100, 0));
+        _world.SetComponent<Text>(textEntity, "Hello World");
         
         return ValueTask.CompletedTask;
     }

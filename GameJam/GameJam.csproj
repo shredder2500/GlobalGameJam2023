@@ -41,6 +41,11 @@
 		<EmbeddedResource Include="Resources\creepy_theme.wav" LogicalName="audio.creepy" />
 		<None Remove="Resources\menu theme.wav" />
 		<EmbeddedResource Include="Resources\menu theme.wav" LogicalName="audio.menu-theme" />
+		<None Remove="Resources\ExportedFont.png" />
+		<None Remove="Resources\Font.glsl" />
+		<EmbeddedResource Include="Resources\Font.glsl" LogicalName="shader.font" />
+		<None Remove="Resources\Forte.bff" />
+		<EmbeddedResource Include="Resources\Forte.bff" LogicalName="font.forte" />
 	</ItemGroup>
 
 </Project>

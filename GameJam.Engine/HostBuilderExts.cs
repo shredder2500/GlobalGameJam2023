@@ -39,7 +39,9 @@ public static class HostBuilderExts
             AddResource<Texture, TextureLoader>();
             AddResource<Shader, ShaderLoader>();
             AddResource<AudioClip, AudioClipLoader>();
-            
+            AddResource<BitmapFont, BitmapFontLoader>();
+
+            services.AddScoped<IBitmapRenderer, BitmapRenderer>();
             services.AddScoped<IResourceManager, ResourceManager>();
             services.AddSingleton<IWorldManager, WorldManager>();
             services.AddScoped<IWorld, World>();
