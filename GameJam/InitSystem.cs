@@ -21,11 +21,12 @@ public class InitSystem : IHostedService
             logger.LogInformation("Init Game");
             var world = worldManager.CreateWorld();
             var spriteSheet = resources.Load<Texture>("sprite.stumpy-tileset");
+            Console.WriteLine(spriteSheet.Handle);
             logger.LogInformation("Creating Entity");
             var entity = world.CreateEntity();
             world.SetComponent(entity, new Position(new(0, 0)));
             world.SetComponent(entity, new Sprite(spriteSheet, new(0, 0, 1, 1)));
-            world.SetComponent(entity, new Size(new(100, 100)));
+            world.SetComponent(entity, new Size(new(800, 600)));
             world.SetComponent(entity, new Rotation(0));
             world.SetComponent(entity, new SpriteLayer(0, 0));
 
