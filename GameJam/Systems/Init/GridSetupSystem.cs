@@ -1,3 +1,4 @@
+using System.Drawing;
 using GameJam.Components;
 using GameJam.Engine.Components;
 using GameJam.Engine.Rendering;
@@ -6,6 +7,7 @@ using GameJam.Engine.Resources;
 using Silk.NET.Input;
 using Silk.NET.Maths;
 using Silk.NET.OpenGL;
+using Size = GameJam.Engine.Components.Size;
 
 namespace GameJam.Systems.Init;
 
@@ -43,8 +45,6 @@ public class GridSetupSystem : ISystem, IDisposable
                 _world.SetComponent(entity, new Position(new(x * CellWidth, y * CellHeight)));
                 _world.SetComponent(entity, _spriteSheet.GetSprite(0));
                 _world.SetComponent(entity, new SpriteLayer(-1, 0));
-                
-               
 
                 if (y == halfhHeight - 1)
                 {
@@ -60,6 +60,11 @@ public class GridSetupSystem : ISystem, IDisposable
                 }
             }
         }
+
+        var treeEntity = _world.CreateEntity();
+        _world.SetComponent(treeEntity, new Position(new(-16, (halfhHeight) * 16)));
+        _world.SetComponent(treeEntity, _spriteSheet.GetSprite(21, new (3, 3)));
+        _world.SetComponent(treeEntity, new Size(new (16 * 3, 16 * 3)));
 
         return ValueTask.CompletedTask;
     }

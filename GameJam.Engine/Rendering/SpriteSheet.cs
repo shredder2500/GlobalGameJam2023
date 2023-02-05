@@ -7,7 +7,8 @@ namespace GameJam.Engine.Rendering;
 
 public record SpriteSheet(Texture Texture, Size TextureSize, Size CellSize)
 {
-    public Sprite GetSprite(int idx)
+    public Sprite GetSprite(int idx) => GetSprite(idx, new(1, 1));
+    public Sprite GetSprite(int idx, Size size)
     {
         var rowSize = TextureSize.Width / CellSize.Width;
         var col = idx / rowSize;
@@ -17,7 +18,7 @@ public record SpriteSheet(Texture Texture, Size TextureSize, Size CellSize)
         var unitY = CellSize.Height / (float)TextureSize.Height;
         var x = unitX * row;
         var y = unitY * col;
-        var uv = new Vector4(x, y, x + unitX, y + unitY);
+        var uv = new Vector4(x, y, x + unitX * size.Width, y + unitY * size.Height);
 
         return new Sprite(Texture, uv);
     }
