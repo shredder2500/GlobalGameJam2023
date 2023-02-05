@@ -10,5 +10,6 @@ public static class Config
     public static int PPU = 16;
     public static int SpawnCount = 65;
     public static int StartingEnergy = 6;
+    public static int FogOfWarDistance = 3;
     public static int EnergyGainFromWater = 4; // Actual gain is one minus this because you lose energy from adding roots
 }

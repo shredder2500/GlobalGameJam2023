@@ -36,7 +36,8 @@ internal class Render2DSystem : ISystem
     {
         var result = _world.GetEntityBuckets()
             .Where(x => x.HasComponent<Position>() &&
-                        x.HasComponent<Text>())
+                        x.HasComponent<Text>() &&
+                        !x.HasComponent<Hidden>())
             .Select(x => x.GetIndices().Select(i => (
                 x.GetComponent<Text>(i)!.Value,
                 x.GetComponent<Position>(i),
@@ -60,7 +61,8 @@ internal class Render2DSystem : ISystem
     {
         var result = _world.GetEntityBuckets()
             .Where(x => x.HasComponent<Position>() &&
-                        x.HasComponent<Sprite>())
+                        x.HasComponent<Sprite>() &&
+                        !x.HasComponent<Hidden>())
             .Select(x => x.GetIndices().Select(i => (
                 x.GetComponent<Sprite>(i),
                 x.GetComponent<Position>(i),

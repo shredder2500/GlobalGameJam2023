@@ -73,6 +73,8 @@ public class UndergroundSetupSystem : ISystem, IDisposable
             _world.SetComponent(underground, new Position(point));
             _world.SetComponent(underground, sprite);
             _world.SetComponent(underground, new SpriteLayer(-1, 1));
+            _world.SetComponent(underground, new UndergroundElement());
+            _world.SetComponent(underground, new Hidden());
             onCreate(underground);
         }
 

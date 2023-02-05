@@ -39,6 +39,7 @@ public class TreeSetupSystem : ISystem, IDisposable
         _world.SetComponent(treeEntity, new Score(0));
         _world.SetComponent(treeEntity, new LastEnergy(0));
         _world.SetComponent(treeEntity, new EnergyManagement(StartingEnergy));
+        
 
         // Create His Eyes
         var eyeEntity = _world.CreateEntity();
