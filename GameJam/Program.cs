@@ -1,4 +1,5 @@
 ﻿using GameJam;
+using GameJam.Systems;
 using GameJam.Systems.Init;
 using Lamar.Microsoft.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +18,9 @@ static IHostBuilder CreateHostBuilder() =>
         {
             services.AddScoped<ISystem, CameraSetupSystem>();
             services.AddScoped<ISystem, GridSetupSystem>();
+            services.AddScoped<ISystem, ActiveSetupSystem>();
+            services.AddScoped<ISystem, MoveActiveNodeSystem>();
+            services.AddScoped<ISystem, ActiveSystem>();
         })
         .UseSerilog((_, _, loggerConfiguration) =>
         {
