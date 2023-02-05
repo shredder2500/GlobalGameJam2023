@@ -5,7 +5,7 @@ using Silk.NET.OpenGL;
 
 namespace GameJam.Engine.Rendering;
 
-public record SpriteSheet(Texture Texture, Size TextureSize, Size CellSize)
+public record struct SpriteSheet(Texture Texture, Size TextureSize, Size CellSize)
 {
     public Sprite GetSprite(int idx) => GetSprite(idx, new(1, 1));
     public Sprite GetSprite(int idx, Size size)

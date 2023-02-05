@@ -27,8 +27,8 @@ internal class RenderQueue : IRenderQueue, IDisposable
     private readonly BufferObject<uint> _ebo;
     private readonly VertexArrayObject<float, uint> _vao;
     
-    private const float Min = 0f;
-    private const float Max = 1f;
+    private const float Min = -.5f;
+    private const float Max = .5f;
 
     //Vertex data, uploaded to the VBO.
     private static float[] Vertices(Vector4 uv) => new []
