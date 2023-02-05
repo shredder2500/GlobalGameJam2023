@@ -46,7 +46,6 @@ internal class Render2DSystem : ISystem
         Vector2D<int> position = bucket != null
             ? bucket.GetComponent<Position>(0) ?? new Vector2D<int>(0, 0)
             : new Vector2D<int>(0, 0);
-        
         _renderQueue.Render(camera, position);
     }
 }

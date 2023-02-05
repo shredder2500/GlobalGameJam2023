@@ -18,7 +18,7 @@ public class CameraSetupSystem : ISystem
     {
         var camEntity = _world.CreateEntity();
          _world.SetComponent(camEntity, new Camera(200));
-         _world.SetComponent(camEntity, new Position(new(50, 50)));
+         _world.SetComponent(camEntity, new Position(new(0, 0)));
          
          return ValueTask.CompletedTask;
     }

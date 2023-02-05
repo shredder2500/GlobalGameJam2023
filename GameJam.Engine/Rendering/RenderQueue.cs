@@ -100,9 +100,9 @@ internal class RenderQueue : IRenderQueue, IDisposable
                 var aspectRatio = (float)_window.Size.X / _window.Size.Y;
                 var width = aspectRatio * camSize;
 
-                var right = width / 2;
+                var right = width / 2f;
                 var left = -right;
-                var top = camSize / 2;
+                var top = camSize / 2f;
                 var bottom = -top;
 
                 var view = Matrix4x4.CreateLookAt(new(position.X, position.Y, 1), new(position.X, position.Y, -1),
@@ -122,7 +122,7 @@ internal class RenderQueue : IRenderQueue, IDisposable
                     SetMatrix(_uProjectionLocation, projection);
 
                     var model = Matrix4x4.Identity * Matrix4x4.CreateScale(size.X, size.Y, 1) *
-                                Matrix4x4.CreateRotationZ(DegreesToRadians(0)) *
+                                Matrix4x4.CreateRotationZ(DegreesToRadians(rot)) *
                                 Matrix4x4.CreateTranslation(pos.X, pos.Y, 0);
                     SetMatrix(_uModelLocation, model);
 

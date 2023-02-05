@@ -12,7 +12,7 @@ public class GridSetupSystem : ISystem, IDisposable
 {
     public GamePhase Phase => GamePhase.Init;
 
-    private const int GridWidth = 20;
+    private const int GridWidth = 14;
     private const int GridHeight = 10;
     private const int CellWidth = 16;
     private const int CellHeight = 16;
@@ -31,9 +31,11 @@ public class GridSetupSystem : ISystem, IDisposable
 
     public ValueTask Execute(CancellationToken cancellationToken)
     {
-        for (var x = 0; x < GridWidth * CellWidth; x += CellWidth)
+        var halfWidth = GridWidth * CellWidth / 2;
+        var halfhHeight = GridHeight * CellHeight / 2;
+        for (var x = -halfWidth; x < halfWidth; x += CellWidth)
         {
-            for (var y = 0; y < GridHeight * CellHeight; y += CellHeight)
+            for (var y = -halfhHeight; y < halfhHeight; y += CellHeight)
             {
                 var entity = _world.CreateEntity();
                 _world.SetComponent(entity, new Node());

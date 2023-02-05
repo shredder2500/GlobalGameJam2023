@@ -22,7 +22,8 @@ public static class HostBuilderExts
         {
             Size = new(windowSize.Width, windowSize.Height),
             Title = title,
-            IsEventDriven = false
+            IsEventDriven = false,
+            WindowBorder = WindowBorder.Fixed
         });
         return builder.ConfigureServices((_, services) =>
         {
