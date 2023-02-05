@@ -11,7 +11,7 @@ await CreateHostBuilder()
 
 static IHostBuilder CreateHostBuilder() =>
     Host.CreateDefaultBuilder()
-        .UseWindow(new (800, 600), "I am Groot!")
+        .UseWindow(new (1000, 800), "I am Groot!")
         .UseEcs()
         // .ConfigureServices(services => services.AddHostedService<InitSystem>())
         .ConfigureServices(services =>

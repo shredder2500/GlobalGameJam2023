@@ -34,7 +34,7 @@ public class GridSetupSystem : ISystem, IDisposable
         var cellHeight = PPU;
         var halfWidth = gridWidth / 2;
         var halfhHeight = gridHeight / 2;
-        for (var x = -halfWidth; x < halfWidth; x ++)
+        for (var x = -halfWidth; x <= halfWidth; x ++)
         {
             for (var y = -halfhHeight; y < halfhHeight; y ++)
             {

@@ -25,7 +25,7 @@ public class UndergroundSetupSystem : ISystem, IDisposable
     private readonly IWorld _world;
     private readonly SpriteSheet _spriteSheet;
     private readonly (Sprite sprite, int chance, Action<Entity> onCreate)[] _undergroundSprites;
-    private int spawnCount = 15;
+    private int spawnCount = 35;
 
     public UndergroundSetupSystem(IResourceManager resources, IWorld world, ILogger<UndergroundSetupSystem> logger)
     {

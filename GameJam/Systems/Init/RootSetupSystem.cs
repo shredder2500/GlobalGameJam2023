@@ -35,7 +35,7 @@ public class RootSetupSystem : ISystem, IDisposable
         for (int i = 0; i < 3; i++)
         {
             var newRoot = _world.CreateEntity();
-            _world.SetComponent(newRoot, new Position(new((i - 1) * PPU, PPU * 4)));
+            _world.SetComponent(newRoot, new Position(new((i - 1) * PPU, PPU * ((GridSize.Y - 1) / 2))));
             _world.SetComponent(newRoot, new SpriteLayer(0, 0));
             _world.SetComponent(newRoot, _spriteSheet.GetSprite(i + 1));
             _world.SetComponent(newRoot, new Root());
