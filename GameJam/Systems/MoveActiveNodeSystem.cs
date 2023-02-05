@@ -18,7 +18,9 @@ public class MoveActiveNodeSystem : ISystem
 {
     private readonly ILogger _logger;
     private readonly IInputContext _inputContext;
-    private IWorld _world;
+    private readonly IWorld _world;
+
+    private bool _isPressed;
 
     public MoveActiveNodeSystem(IWorld world, ILogger<MoveActiveNodeSystem> logger, IInputContext inputContext)
     {
@@ -29,30 +31,38 @@ public class MoveActiveNodeSystem : ISystem
 
     public ValueTask Execute(CancellationToken cancellationToken)
     {
+        
         // Key Inputs to Move Active Node 
-        if (_inputContext.Keyboards[0].IsKeyPressed(Key.A))
+        var aPressed = _inputContext.Keyboards[0].IsKeyPressed(Key.A);
+        var dPressed = _inputContext.Keyboards[0].IsKeyPressed(Key.D);
+        var wPressed = _inputContext.Keyboards[0].IsKeyPressed(Key.W);
+        var sPressed = _inputContext.Keyboards[0].IsKeyPressed(Key.S);
+        if (aPressed && !_isPressed)
         {
             // Move active to left
             MoveActiveHorizontally(-1);
         }
-        else if (_inputContext.Keyboards[0].IsKeyPressed(Key.D))
+        else if (dPressed && !_isPressed)
         {
             // Move active to right
             MoveActiveHorizontally(1);
         }
-        else if (_inputContext.Keyboards[0].IsKeyPressed(Key.W))
+        else if (wPressed && !_isPressed)
         {
             // Move active to up
             MoveActiveVertically(1);
         }
-        else if (_inputContext.Keyboards[0].IsKeyPressed(Key.S))
+        else if (sPressed && !_isPressed)
         {
             // Move active to down
             MoveActiveVertically(-1);
         }
 
+        _isPressed = aPressed || dPressed || wPressed || sPressed;
+        
+
         // param1 -> -1 if left, +1 if right
-        ValueTask MoveActiveHorizontally(int offset)
+        void MoveActiveHorizontally(int offset)
         {
             var (entity, activeNode) = _world.GetEntityBuckets()
                .Where(x => x.HasComponent<Active>() && x.HasComponent<Node>())
@@ -60,9 +70,9 @@ public class MoveActiveNodeSystem : ISystem
                .SelectMany(x => x)
                .FirstOrDefault();
 
-            if (activeNode == null) return ValueTask.CompletedTask;
+            if (activeNode == null) return ;
 
-            var (newActiveNode, _) = _world.GetEntityBuckets()
+            var (newActiveNode, something) = _world.GetEntityBuckets()
                 .Where(x => x.HasComponent<Node>() && x.HasComponent<Position>())
                 .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<Position>(i))))
                 .SelectMany(x => x)
@@ -70,15 +80,15 @@ public class MoveActiveNodeSystem : ISystem
                 {
                     X = activeNode.Value.Value.X + offset * 16
                 }));
+            
+            if (something == null) return;
 
             _world.RemoveComponent<Active>(entity);
             _world.SetComponent<Active>(newActiveNode, new());
-
-            return ValueTask.CompletedTask;
         }
 
         // param1 -> -1 if down, +1 if up
-        ValueTask MoveActiveVertically(int offset)
+        void MoveActiveVertically(int offset)
         {
             var (entity, activeNode) = _world.GetEntityBuckets()
                .Where(x => x.HasComponent<Active>() && x.HasComponent<Node>())
@@ -86,7 +96,7 @@ public class MoveActiveNodeSystem : ISystem
                .SelectMany(x => x)
                .FirstOrDefault();
 
-            if (activeNode == null) return ValueTask.CompletedTask;
+            if (activeNode == null) return;
 
             _logger.LogInformation("found active node");
 
@@ -99,14 +109,12 @@ public class MoveActiveNodeSystem : ISystem
                     Y = activeNode.Value.Value.Y + offset * 16
                 }));
 
-            if (something == null) return ValueTask.CompletedTask;
+            if (something == null) return;
 
             _world.RemoveComponent<Active>(entity);
             _world.SetComponent<Active>(newActiveNode, new());
 
             _logger.LogInformation("new active node set");
-
-            return ValueTask.CompletedTask;
         }
 
         return ValueTask.CompletedTask;
