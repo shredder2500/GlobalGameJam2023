@@ -9,13 +9,14 @@ using static GameJam.Engine.MathHelper;
 
 namespace GameJam.Engine.Rendering;
 
-internal class RenderQueue : IRenderQueue
+internal class RenderQueue : IRenderQueue, IDisposable
 {
     private readonly PriorityQueue<(Sprite, Vector2D<int>, Vector2D<int>, float), SpriteLayer> _renderQueue;
     private readonly IWindow _window;
     private readonly GL _gl;
     private readonly Shader _shader;
     private readonly IMainThreadDispatcher _dispatcher;
+    private readonly IResourceManager _resources;
     
     private readonly int _uTextureLocation;
     private readonly int _uViewLocation;
@@ -49,6 +50,7 @@ internal class RenderQueue : IRenderQueue
     public RenderQueue(IWindow window, IResourceManager resources, IMainThreadDispatcher dispatcher)
     {
         _window = window;
+        _resources = resources;
         _dispatcher = dispatcher;
         _renderQueue = new(new SpriteLayerComparer());
         _shader = resources.Load<Shader>("shader.sprite");
@@ -101,6 +103,8 @@ internal class RenderQueue : IRenderQueue
         
         _dispatcher.Enqueue(() =>
         {
+            _gl.UseProgram(_shader.Handle);
+            _vao.Bind();
             while (_renderQueue.TryDequeue(out var x, out _))
             {
                 var (sprite, pos, size, rot) = x;
@@ -112,7 +116,7 @@ internal class RenderQueue : IRenderQueue
                 SetMatrix(_uViewLocation, view);
                 SetMatrix(_uProjectionLocation, projection);
     
-                var model = Matrix4x4.Identity * Matrix4x4.CreateScale(size.X, size.Y, 1) * Matrix4x4.CreateRotationZ(DegreesToRadians(rot)) * Matrix4x4.CreateTranslation(pos.X, pos.Y, 0);
+                var model = Matrix4x4.Identity * Matrix4x4.CreateScale(size.X, size.Y, 1) * Matrix4x4.CreateRotationZ(DegreesToRadians(0)) * Matrix4x4.CreateTranslation(pos.X, pos.Y, 0);
                 SetMatrix(_uModelLocation, model);
     
                 _gl.DrawElements(PrimitiveType.Triangles, (uint) Indices.Length, DrawElementsType.UnsignedInt, null);
@@ -120,6 +124,14 @@ internal class RenderQueue : IRenderQueue
                 void SetMatrix(int location, Matrix4x4 value) =>
                     _gl.UniformMatrix4(location, 1, false, (float*)&value);
             }
+            _vao.UnBind();
         });
+    }
+
+    public void Dispose() {
+        _vao.Dispose();
+        _vbo.Dispose();
+        _ebo.Dispose();
+        _resources.Unload<Shader>("shader.default-sprite");
     }
 }
