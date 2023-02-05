@@ -11,7 +11,7 @@ namespace GameJam.Engine.Rendering;
 
 internal class RenderQueue : IRenderQueue, IDisposable
 {
-    private readonly PriorityQueue<(Sprite, Vector2D<int>, Vector2D<int>, float), SpriteLayer> _renderQueue;
+    private readonly PriorityQueue<(Sprite, Vector2D<int>, Vector2D<int>, float, Vector2), SpriteLayer> _renderQueue;
     private readonly IWindow _window;
     private readonly GL _gl;
     private readonly Shader _shader;
@@ -27,17 +27,17 @@ internal class RenderQueue : IRenderQueue, IDisposable
     private readonly BufferObject<uint> _ebo;
     private readonly VertexArrayObject<float, uint> _vao;
     
-    private const float Min = -.5f;
-    private const float Max = .5f;
+    private const float Min = 0;
+    private const float Max = 1;
 
     //Vertex data, uploaded to the VBO.
-    private static float[] Vertices(Vector4 uv) => new []
+    private static float[] Vertices(Vector4 uv, Vector2 pivot) => new []
     {
         //X    Y
-        Min, Min, uv.X, uv.W,
-        Max, Min, uv.Z, uv.W,
-        Min, Max, uv.X, uv.Y,
-        Max, Max, uv.Z, uv.Y
+        Min - pivot.X, Min - pivot.Y, uv.X, uv.W,
+        Max - pivot.X, Min - pivot.Y, uv.Z, uv.W,
+        Min - pivot.X, Max - pivot.Y, uv.X, uv.Y,
+        Max - pivot.X, Max - pivot.Y, uv.Z, uv.Y
     };
 
     //Index data, uploaded to the EBO.
@@ -58,7 +58,7 @@ internal class RenderQueue : IRenderQueue, IDisposable
         _gl = GL.GetApi(window);
         
         _ebo = new (_gl, Indices, BufferTargetARB.ElementArrayBuffer);
-        _vbo = new (_gl, Vertices(new (0, 0, 1, 1)), BufferTargetARB.ArrayBuffer);
+        _vbo = new (_gl, Vertices(new (0, 0, 1, 1), new(.5f, .5f)), BufferTargetARB.ArrayBuffer);
         _vao = new (_gl, _vbo, _ebo);
 
         _vao.VertexAttributePointer(0, 2, VertexAttribPointerType.Float, 4, 0);
@@ -82,10 +82,11 @@ internal class RenderQueue : IRenderQueue, IDisposable
         }
     }
 
-    public void Enqueue(Sprite sprite, SpriteLayer layer, Vector2D<int> pos, Vector2D<int> size, float rotation)
+    public void Enqueue(Sprite sprite, SpriteLayer layer, Vector2D<int> pos, Vector2D<int> size, float rotation,
+        Pivot pivot)
     {
         lock (_renderQueue) {
-            _renderQueue.Enqueue((sprite, pos, size, rotation), layer);
+            _renderQueue.Enqueue((sprite, pos, size, rotation, pivot.Value), layer);
         }
     }
 
@@ -112,8 +113,8 @@ internal class RenderQueue : IRenderQueue, IDisposable
                 _vao.Bind();
                 while (_renderQueue.TryDequeue(out var x, out _))
                 {
-                    var (sprite, pos, size, rot) = x;
-                    _vbo.Upload(Vertices(sprite.Uv));
+                    var (sprite, pos, size, rot, pivot) = x;
+                    _vbo.Upload(Vertices(sprite.Uv, pivot));
                     _gl.Uniform1(_uTextureLocation, 0);
                     _gl.BindTexture(TextureTarget.Texture2D, sprite.Texture.Handle);
                     _gl.ActiveTexture(TextureUnit.Texture0);

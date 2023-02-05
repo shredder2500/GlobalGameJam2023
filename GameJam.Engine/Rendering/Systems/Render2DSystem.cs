@@ -27,14 +27,15 @@ internal class Render2DSystem : ISystem
                 x.GetComponent<Position>(i),
                 x.GetComponent<Size>(i) ?? new Vector2D<int>(16, 16),
                 x.GetComponent<Rotation>(i) ?? 0,
-                x.GetComponent<SpriteLayer>(i) ?? new(0, 0))))
+                x.GetComponent<SpriteLayer>(i) ?? new(0, 0),
+                x.GetComponent<Pivot>(i) ?? new (new (.5f, .5f)))))
             .SelectMany(x => x);
 
         await Parallel.ForEachAsync(result, cancellationToken, (x, _) =>
         {
-            var (sprite, pos, size, rot, layer) = x;
+            var (sprite, pos, size, rot, layer, pivot) = x;
             
-            _renderQueue.Enqueue(sprite!.Value, layer, pos!.Value, size, rot);
+            _renderQueue.Enqueue(sprite!.Value, layer, pos!.Value, size, rot, pivot);
             
             return ValueTask.CompletedTask;
         });
