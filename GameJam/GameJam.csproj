@@ -37,6 +37,10 @@
 		<EmbeddedResource Include="Resources\Sprite.glsl" LogicalName="shader.sprite" />
 		<None Remove="Resources\StumpyTileset.png" />
 		<EmbeddedResource Include="Resources\StumpyTileset.png" LogicalName="sprite.stumpy-tileset" />
+		<None Remove="Resources\creepy_theme.wav" />
+		<EmbeddedResource Include="Resources\creepy_theme.wav" LogicalName="audio.creepy" />
+		<None Remove="Resources\menu theme.wav" />
+		<EmbeddedResource Include="Resources\menu theme.wav" LogicalName="audio.menu-theme" />
 	</ItemGroup>
 
 </Project>
