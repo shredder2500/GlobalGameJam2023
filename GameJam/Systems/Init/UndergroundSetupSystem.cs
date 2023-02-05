@@ -35,9 +35,9 @@ public class UndergroundSetupSystem : ISystem, IDisposable
             new(PPU, PPU));
         _undergroundSprites = new (Sprite sprite, int chance, Action<Entity> onCreate)[] {
                 (_spriteSheet.GetSprite(4), 10, x => world.SetComponent(x, new RichSoil())), 
-                 (_spriteSheet.GetSprite(5), 40, x => world.SetComponent(x, new Water())), 
+                 (_spriteSheet.GetSprite(5), 50, x => world.SetComponent(x, new Water())), 
                  (_spriteSheet.GetSprite(7), 10, x => world.SetComponent(x, new Bug())), 
-                 (_spriteSheet.GetSprite(9), 20, x => world.SetComponent(x, new Bug())),
+                 (_spriteSheet.GetSprite(9), 10, x => world.SetComponent(x, new Bug())),
                  (_spriteSheet.GetSprite(146), 20, x => world.SetComponent(x, new Stone()))
              }
             .OrderBy(x => x.Item2).ToArray();

@@ -58,7 +58,7 @@ public class WaterConsumption : ISystem, IDisposable
         {
             _world.RemoveComponent<Water>(entity);
             _world.SetComponent(entity, _spriteSheet.GetSprite(6));
-            IncreaseEnergy(3);
+            IncreaseEnergy(EnergyGainFromWater);
             foundWater = true;
         }
 
@@ -98,13 +98,6 @@ public class WaterConsumption : ISystem, IDisposable
             .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<LastEnergy>(i), x.GetComponent<EnergyManagement>(i))))
             .SelectMany(x => x)
             .FirstOrDefault();
-
-
-        if (energy.Item2 != null && energy.Item3 != null)
-        {
-            _logger.LogInformation("LastEnergy: " + energy.Item2.Value.ToString());
-            _logger.LogInformation("CurrEnergy: " + energy.Item3.Value.ToString());
-        }
 
         return ValueTask.CompletedTask; 
     }

@@ -33,7 +33,7 @@ public class UISetupSystem : ISystem, IDisposable
     {
         // Create UI entity
         var textEntity = _world.CreateEntity();
-        _world.SetComponent(textEntity, new Position(new(0, 0)));
+        _world.SetComponent(textEntity, new Position(new(95, 120)));
         _world.SetComponent(textEntity, new SpriteLayer(100, 0));
         _world.SetComponent(textEntity, new ScoreText());
         _world.SetComponent<Text>(textEntity, "Score: 0");

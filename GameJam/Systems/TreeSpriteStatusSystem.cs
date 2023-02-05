@@ -25,10 +25,10 @@ public class TreeSpriteStatusSystem : ISystem, IDisposable
     {
         _world = world;
         _resources = resources;
-        _spritesheet = new(resources.Load<Texture>("sprite.stumpy-tileset"), new(320, 128),
-                new(16, 16));
+        _spritesheet = new(resources.Load<Texture>("sprite.stumpy-tileset"), StumpyTileSheetSize,
+           new(PPU, PPU));
         _treeDeadSprites = new[] {
-             _spritesheet.GetSprite(112, new(3, 3)),
+             _spritesheet.GetSprite(186, new(3, 3)),
         };
     }
 
@@ -51,7 +51,11 @@ public class TreeSpriteStatusSystem : ISystem, IDisposable
         if (energyDiff == 0 && energyStatus.Item3.Value <= 0)
         {
             _world.SetComponent(energyStatus.Item1, _treeDeadSprites[0]);
-            _world.SetComponent(energyStatus.Item1, new Size(new(PPU * 3, PPU * 3)));
+            var treeEyes = _world.GetEntityBuckets()
+                .Where(x => x.HasComponent<Eye>())
+                .Select(x => x.GetIndices().Select(i => x.GetEntity(i)))
+                .SelectMany(x => x).FirstOrDefault();
+            _world.RemoveComponent<Sprite>(treeEyes);
         }
   
         return ValueTask.CompletedTask;

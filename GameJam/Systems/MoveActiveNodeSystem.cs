@@ -1,10 +1,13 @@
 ﻿using GameJam.Components;
 using GameJam.Engine.Components;
+using GameJam.Engine.Rendering;
 using GameJam.Engine.Rendering.Components;
+using GameJam.Engine.Resources;
 using JasperFx.Core;
 using Microsoft.Extensions.Logging;
 using Silk.NET.Input;
 using Silk.NET.Maths;
+using Silk.NET.OpenGL;
 using SixLabors.ImageSharp.ColorSpaces;
 using System;
 using System.Collections.Generic;
@@ -16,19 +19,28 @@ using static GameJam.Config;
 
 namespace GameJam.Systems;
 
-public class MoveActiveNodeSystem : ISystem
+public class MoveActiveNodeSystem : ISystem, IDisposable
 {
+    private readonly IResourceManager _resources;
+    private readonly SpriteSheet _spriteSheet;
     private readonly ILogger _logger;
     private readonly IInputContext _inputContext;
     private readonly IWorld _world;
 
     private bool _isPressed;
 
-    public MoveActiveNodeSystem(IWorld world, ILogger<MoveActiveNodeSystem> logger, IInputContext inputContext)
+    public MoveActiveNodeSystem(IWorld world, IResourceManager resources, ILogger<MoveActiveNodeSystem> logger, IInputContext inputContext)
     {
+        _resources= resources;
+        _spriteSheet = new(resources.Load<Texture>("sprite.stumpy-tileset"), StumpyTileSheetSize, new(PPU, PPU));
         _logger = logger;
         _world = world;
         _inputContext = inputContext;
+    }
+
+    public void Dispose()
+    {
+        throw new NotImplementedException();
     }
 
     public ValueTask Execute(CancellationToken cancellationToken)
@@ -113,6 +125,19 @@ public class MoveActiveNodeSystem : ISystem
 
             _world.RemoveComponent<Active>(entity);
             _world.SetComponent<Active>(newActiveNode, new());
+        }
+
+        void UpdateTreeEyes()
+        {
+            var treeEyes = _world.GetEntityBuckets()
+                .Where(x => x.HasComponent<Eye>())
+                .Select(x => x.GetIndices().Select(i => x.GetEntity(i)))
+                .SelectMany(x => x).FirstOrDefault();
+
+            // 46 = Down, 214 = Left, 234 = Right, 49
+            _world.SetComponent(treeEyes, _spriteSheet.GetSprite(0));
+
+            
         }
 
         return ValueTask.CompletedTask;
