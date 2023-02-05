@@ -55,21 +55,25 @@ public class MoveActiveNodeSystem : ISystem, IDisposable
         {
             // Move active to left
             MoveActiveHorizontally(-1);
+            UpdateTreeEyes(2);
         }
         else if (dPressed && !_isPressed)
         {
             // Move active to right
             MoveActiveHorizontally(1);
+            UpdateTreeEyes(3);
         }
         else if (wPressed && !_isPressed)
         {
             // Move active to up
             MoveActiveVertically(1);
+            UpdateTreeEyes(0);
         }
         else if (sPressed && !_isPressed)
         {
             // Move active to down
             MoveActiveVertically(-1);
+            UpdateTreeEyes(1);
         }
 
         _isPressed = aPressed || dPressed || wPressed || sPressed;
@@ -127,17 +131,40 @@ public class MoveActiveNodeSystem : ISystem, IDisposable
             _world.SetComponent<Active>(newActiveNode, new());
         }
 
-        void UpdateTreeEyes()
+        // 0 = Up, 1 = Down, 2 = Left, 3 = Right
+        void UpdateTreeEyes(int dir)
         {
             var treeEyes = _world.GetEntityBuckets()
                 .Where(x => x.HasComponent<Eye>())
                 .Select(x => x.GetIndices().Select(i => x.GetEntity(i)))
                 .SelectMany(x => x).FirstOrDefault();
 
-            // 46 = Down, 214 = Left, 234 = Right, 49
-            _world.SetComponent(treeEyes, _spriteSheet.GetSprite(0));
-
-            
+            // 46 = Down, 214 = Left, 234 = Right, 49 = Up
+            if (dir == 0)
+            {
+                // Up
+                _world.SetComponent(treeEyes, _spriteSheet.GetSprite(49));
+            }
+            else if (dir == 1)
+            {
+                // Down
+                _world.SetComponent(treeEyes, _spriteSheet.GetSprite(46));
+            }
+            else if (dir == 2)
+            {
+                // Left
+                _world.SetComponent(treeEyes, _spriteSheet.GetSprite(214));
+            }
+            else if (dir == 3)
+            {
+                // Right
+                _world.SetComponent(treeEyes, _spriteSheet.GetSprite(234));
+            }
+            else
+            {
+                // Default to Down
+                _world.SetComponent(treeEyes, _spriteSheet.GetSprite(49));
+            }
         }
 
         return ValueTask.CompletedTask;
