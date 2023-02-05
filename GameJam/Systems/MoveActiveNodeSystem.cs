@@ -13,12 +13,12 @@ using System.Threading.Tasks;
 
 namespace GameJam.Systems;
 
-public class InputSystem : ISystem
+public class MoveActiveNodeSystem : ISystem
 {
     private readonly IInputContext _inputContext;
     private IWorld _world;
 
-    public InputSystem(IInputContext inputContext)
+    public MoveActiveNodeSystem(IInputContext inputContext)
     {
         _inputContext = inputContext;
     }
@@ -46,16 +46,6 @@ public class InputSystem : ISystem
             // Move active to down
             MoveActiveVertically(-1);
         }
-
-        // Key Input to Change Selector to Active
-        if (_inputContext.Keyboards[0].IsKeyPressed(Key.Space))
-        {
-            var activeNode = _world.GetEntityBuckets()
-                .Where(x => x.HasComponent<Active>() && x.HasComponent<Node>())
-                .Select(x => x.GetIndices().Select(i => x.GetComponent<Position>(i)))
-        }
-
-
 
         // param1 -> -1 if left, +1 if right
         ValueTask MoveActiveHorizontally(int offset)

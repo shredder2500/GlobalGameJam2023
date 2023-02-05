@@ -33,10 +33,20 @@ public class InitSystem : IHostedService
 
             var camEntity = world.CreateEntity();
             world.SetComponent(camEntity, new Camera(200));
-            world.SetComponent(camEntity, new Position(new(0, 0)));
+            world.SetComponent(camEntity, new Position(new(50, 50)));
 
 
             //CreateGrid(10, 10);
+            foreach (var idx in Enumerable.Range(0, 100))
+            {
+                var x = world.CreateEntity();
+                world.SetComponent(x, new Position(new Vector2D<int>((idx / 10) * 16, (idx % 10) * 16)));
+                world.SetComponent(x, spriteSheet.GetSprite(new Random().Next(0, 96)));
+                world.SetComponent(x, new Size(new(16, 16)));
+                world.SetComponent(x, new Rotation(0));
+                world.SetComponent(x, new SpriteLayer(0, 0));
+            }
+
 
             
             void CreateGrid(int width, int height)
@@ -58,7 +68,7 @@ public class InitSystem : IHostedService
             {
                 var rootEntity = world.CreateEntity();
                 world.SetComponent(rootEntity, new Position(new Vector2D<int>(x, y)));
-                world.SetComponent(rootEntity, new Sprite(spriteSheet, new System.Numerics.Vector4(0,0,1,1)));
+                //world.SetComponent(rootEntity, new Sprite(spriteSheet, new System.Numerics.Vector4(0,0,1,1)));
                 world.SetComponent(rootEntity, new Rotation(0));
                 world.SetComponent(rootEntity, new SpriteLayer(0, 0));
             }
