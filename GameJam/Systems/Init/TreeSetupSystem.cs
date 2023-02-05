@@ -1,6 +1,7 @@
 ﻿using GameJam.Components;
 using GameJam.Engine.Components;
 using GameJam.Engine.Rendering;
+using GameJam.Engine.Rendering.Components;
 using GameJam.Engine.Resources;
 using Silk.NET.OpenGL;
 
@@ -36,8 +37,15 @@ public class TreeSetupSystem : ISystem, IDisposable
         _world.SetComponent(treeEntity, _spriteSheet.GetSprite(21, new (3, 3)));
         _world.SetComponent(treeEntity, new Size(new(PPU * 3, PPU * 3)));
         _world.SetComponent(treeEntity, new Score(0));
-        _world.SetComponent(treeEntity, new LastScore(0));
+        _world.SetComponent(treeEntity, new LastEnergy(0));
         _world.SetComponent(treeEntity, new EnergyManagement(StartingEnergy));
+
+        // Create His Eyes
+        var eyeEntity = _world.CreateEntity();
+        _world.SetComponent(eyeEntity, new Position(new(0, ((GridSize.Y / 2) + 1) * PPU)));
+        _world.SetComponent(eyeEntity, _spriteSheet.GetSprite(46));
+        _world.SetComponent(eyeEntity, new SpriteLayer(0, 1));
+        _world.SetComponent(eyeEntity, new Eye());
 
         return ValueTask.CompletedTask;
     }

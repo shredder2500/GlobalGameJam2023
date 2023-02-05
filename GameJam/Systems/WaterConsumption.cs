@@ -50,29 +50,54 @@ public class WaterConsumption : ISystem, IDisposable
             .SelectMany(x => x).Where(x =>
             {
                 return search.Contains(x.Item2);
-            }); 
+            });
+
+        bool foundWater = false;
 
         foreach (var (entity, _) in water) 
         {
             _world.RemoveComponent<Water>(entity);
             _world.SetComponent(entity, _spriteSheet.GetSprite(6));
-            IncreaseEnergy(4);
+            IncreaseEnergy(EnergyGainFromWater);
+            foundWater = true;
+        }
+
+        if (!foundWater)
+        {
+            var player = _world.GetEntityBuckets()
+                .Where(x => x.HasComponent<EnergyManagement>())
+                .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<LastEnergy>(i), x.GetComponent<EnergyManagement>(i))))
+                .SelectMany(x => x)
+                .FirstOrDefault();
+
+            if (player.Item2 != null && player.Item3 != null)
+            {
+                int currentEnergy = player.Item2.Value;
+                _world.SetComponent(player.Item1, new LastEnergy(currentEnergy - 1));
+            }
         }
 
         void IncreaseEnergy(int amount)
         {
             var player = _world.GetEntityBuckets()
                 .Where(x => x.HasComponent<EnergyManagement>())
-                .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<EnergyManagement>(i))))
+                .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<LastEnergy>(i), x.GetComponent<EnergyManagement>(i))))
                 .SelectMany(x => x)
                 .FirstOrDefault();
 
-            if (player.Item2 != null)
+            if (player.Item2 != null && player.Item3 != null)
             {
-                int currentEnergy = player.Item2.Value;
+                int currentEnergy = player.Item3.Value;
                 _world.SetComponent(player.Item1, new EnergyManagement(currentEnergy + amount));
+                _world.SetComponent(player.Item1, new LastEnergy(currentEnergy));
             }
         }
+
+        var energy = _world.GetEntityBuckets()
+            .Where(x => x.HasComponent<EnergyManagement>())
+            .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<LastEnergy>(i), x.GetComponent<EnergyManagement>(i))))
+            .SelectMany(x => x)
+            .FirstOrDefault();
 
         return ValueTask.CompletedTask; 
     }

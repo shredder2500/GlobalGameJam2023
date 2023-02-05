@@ -104,7 +104,6 @@ internal class RenderQueue : IRenderQueue, IDisposable
     {
         lock (_textRenderQueue)
         {
-            Console.WriteLine("queuing Text");
             _textRenderQueue.Enqueue((text, pos, size, rotation, pivot.Value), layer);
         }
     }
@@ -162,7 +161,6 @@ internal class RenderQueue : IRenderQueue, IDisposable
                 while (_textRenderQueue.TryDequeue(out var x, out _))
                 {
                     var (text, pos, size, rot, pivot) = x;
-                    Console.WriteLine($"Rendering Text {text}");
                     _bitmapRenderer.RenderText(new(pos.X, pos.Y), text, _font, Color.White);
                 }
             }
