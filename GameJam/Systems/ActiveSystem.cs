@@ -15,6 +15,7 @@ public class ActiveSystem : ISystem
 
     public ValueTask Execute(CancellationToken cancellationToken)
     {
+        // Change selector node to active
         var activeNode = _world.GetEntityBuckets()
                 .Where(x => x.HasComponent<Active>() && x.HasComponent<Node>())
                 .Select(x => x.GetIndices().Select(i => x.GetComponent<Position>(i)))
