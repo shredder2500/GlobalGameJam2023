@@ -8,6 +8,7 @@ public class WorldManager : IWorldManager
     private IEnumerable<ISystem> _updateSystems;
     private IEnumerable<ISystem> _simSystems;
     private IEnumerable<ISystem> _renderSystems;
+    private IEnumerable<ISystem> _initSystems;
     private readonly List<IWorld> _worlds;
     private readonly IServiceProvider _services;
     private readonly ILogger _logger;
@@ -19,6 +20,7 @@ public class WorldManager : IWorldManager
         _updateSystems = ArraySegment<ISystem>.Empty;
         _simSystems = ArraySegment<ISystem>.Empty;
         _renderSystems = ArraySegment<ISystem>.Empty;
+        _initSystems = ArraySegment<ISystem>.Empty;
         _worlds = new();
     }
 
@@ -38,7 +40,18 @@ public class WorldManager : IWorldManager
             _updateSystems = _updateSystems.Concat(allSystems.Where(x => x.Phase == GamePhase.Update).ToArray());
             _simSystems = _simSystems.Concat(allSystems.Where(x => x.Phase == GamePhase.Simulation).ToArray());
             _renderSystems = _renderSystems.Concat(allSystems.Where(x => x.Phase == GamePhase.Presentation).ToArray());
+            _initSystems = _renderSystems.Concat(allSystems.Where(x => x.Phase == GamePhase.Init).ToArray());
         }
+    }
+
+    public async ValueTask Init(CancellationToken cancellationToken)
+    {
+        await Parallel.ForEachAsync(_initSystems, cancellationToken, (system, token) => system.Execute(token));
+        await Parallel.ForEachAsync(_worlds, cancellationToken, (world, _) =>
+        {
+            world.Sync();
+            return ValueTask.CompletedTask;
+        });
     }
 
     public async ValueTask Update(CancellationToken cancellationToken)

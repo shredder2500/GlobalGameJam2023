@@ -6,4 +6,5 @@ public interface IWorldManager
     internal ValueTask Update(CancellationToken token);
     internal ValueTask Sim(CancellationToken token);
     internal ValueTask Render(CancellationToken token);
+    internal ValueTask Init(CancellationToken cancellationToken);
 }

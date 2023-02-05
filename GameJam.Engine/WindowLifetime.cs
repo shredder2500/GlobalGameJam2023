@@ -29,7 +29,7 @@ internal class WindowLifetime : IHostedService
         _dispatcher = dispatcher;
     }
 
-    public Task StartAsync(CancellationToken _)
+    public Task StartAsync(CancellationToken cancellationToken)
     {
         
         _window.Initialize();
@@ -37,7 +37,10 @@ internal class WindowLifetime : IHostedService
         gl.Enable(GLEnum.Blend);
         gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
         gl.ClearColor(Color.Aqua);
-        _window.Run(() => {
+        _worldManager.CreateWorld(); 
+        _worldManager.Init(cancellationToken).AsTask().Wait(cancellationToken);
+        _window.Run(() =>
+        {
             _gameTime.Update();
             _window.DoEvents();
             _worldManager.Update(_appLifetime.ApplicationStopping)
@@ -61,7 +64,6 @@ internal class WindowLifetime : IHostedService
     public Task StopAsync(CancellationToken cancellationToken)
     {
         _window.Close();
-        // return _gameLoop;
-        return Task.CompletedTask;
+        return Task.Delay(500, cancellationToken);
     }
 }

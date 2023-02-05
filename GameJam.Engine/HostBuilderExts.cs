@@ -38,20 +38,20 @@ public static class HostBuilderExts
             AddResource<Texture, TextureLoader>();
             AddResource<Shader, ShaderLoader>();
             
-            services.AddSingleton<IResourceManager, ResourceManager>();
+            services.AddScoped<IResourceManager, ResourceManager>();
             services.AddSingleton<IWorldManager, WorldManager>();
             services.AddScoped<IWorld, World>();
             services.AddSingleton<IGameTime, GameTime>();
             services.AddHostedService<WindowLifetime>();
-            services.AddSingleton<IRenderQueue, RenderQueue>();
+            services.AddScoped<IRenderQueue, RenderQueue>();
             services.AddSingleton<IMainThreadDispatcher, MainThreadDispatcher>();
 
             services.AddScoped<ISystem, Render2DSystem>();
 
             void AddResource<T, TLoader>() where TLoader : class, IResourceLoader<T>
             {
-                services.AddSingleton<IResourceCache<T>, ResourceCache<T>>();
-                services.AddSingleton<IResourceLoader<T>, TLoader>();
+                services.AddScoped<IResourceCache<T>, ResourceCache<T>>();
+                services.AddScoped<IResourceLoader<T>, TLoader>();
             }
         });
     }

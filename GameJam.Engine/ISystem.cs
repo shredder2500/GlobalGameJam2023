@@ -6,10 +6,3 @@ public interface ISystem
     
     public ValueTask Execute(CancellationToken cancellationToken);
 }
-
-public enum GamePhase
-{
-    Update,
-    Simulation,
-    Presentation
-}
