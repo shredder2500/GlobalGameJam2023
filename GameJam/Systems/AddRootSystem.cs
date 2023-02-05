@@ -61,12 +61,20 @@ internal class AddRootSystem : ISystem, IDisposable
             if (activeNode == null) return ValueTask.CompletedTask;
 
             // Check if there is a root already at active node location
-            var root = _world.GetEntityBuckets()
+            var rootPositionCheck = _world.GetEntityBuckets()
                 .Where(x => x.HasComponent<Root>())
-                .Select(x => x.GetIndices().Select(i => x.GetComponent<Position>(i)));
-                //.SelectMany(x => 
+                .Select(x => x.GetIndices().Select(i => x.GetComponent<Position>(i)))
+                .SelectMany(x => x);
 
-            // Get number of roots
+            foreach (Position? pos in rootPositionCheck)
+            {
+                if (pos!.Value.Equals(activeNode.Value.Value))
+                {
+                    return ValueTask.CompletedTask;
+                }
+            }
+
+            // Get number of roots (For sprite layering / order)
             var numRoots = _world.GetEntityBuckets()
                 .Where(x => x.HasComponent<Root>())
                 .Select(x => x.GetIndices())
@@ -75,44 +83,38 @@ internal class AddRootSystem : ISystem, IDisposable
             var rootLocations = _world.GetEntityBuckets()
                 .Where(x => x.HasComponent<Root>() && x.HasComponent<Position>())
                 .Select(x => x.GetIndices().Select(i => (x.GetComponent<Position>(i))))
-                .SelectMany(x => x);
+                .SelectMany(x => x)
+                .Where(x => CheckAdjacency(activeNode.Value, x!.Value))
+                .ToArray();
 
-            var activeNodeX = activeNode.Value.Value.X;
-            var activeNodeY = activeNode.Value.Value.Y;
-            foreach (Position? location in rootLocations)
+            if (!rootLocations.Any()) return ValueTask.CompletedTask;
+
+            var newRoot = _world.CreateEntity();
+            _world.SetComponent(newRoot, new Root());
+            _world.SetComponent(newRoot, new Position(activeNode.Value));
+            _world.SetComponent(newRoot, _rootSprites[new Random().Next(0, _rootSprites.Length)]);
+            _world.SetComponent(newRoot, new Size(new(2 * 16, 16)));
+            _world.SetComponent(newRoot, new SpriteLayer(0, numRoots));
+            _world.SetComponent(newRoot, new Pivot(new(0.25f, 0.5f)));
+            switch (CheckSpecificAdjacency(activeNode.Value, rootLocations[new Random().Next(0, rootLocations.Length)]!.Value))
             {
-                if (CheckAdjacency(activeNode.Value, location!.Value))
-                {
-                    var newRoot = _world.CreateEntity();
-                    _world.SetComponent(newRoot, new Root());
-                    _world.SetComponent(newRoot, new Position(activeNode.Value));
-                    _world.SetComponent(newRoot, _rootSprites[new Random().Next(0, _rootSprites.Length)]);
-                    _world.SetComponent(newRoot, new Size(new(2 * 16, 16)));
-                    _world.SetComponent(newRoot, new SpriteLayer(0, numRoots));
-                    switch (CheckSpecificAdjacency(activeNode.Value, location!.Value))
-                    {
-                        case 1:
-                            // Right
-                            _logger.LogInformation("spawn to right");
-                            _world.SetComponent(newRoot, new Rotation(90));
-                            break;
-                        case 2:
-                            // Down
-                            _logger.LogInformation("spawn down");
-                            // _world.SetComponent(newRoot, new Rotation(270));
-                            break;
-                        case 3:
-                            // Up
-                            _logger.LogInformation("spawn above");
-                            //_world.SetComponent(newRoot, new Rotation(270));
-                            break;
-                        default:
-                            // Default to left
-                            break;
-                    }
-                    return ValueTask.CompletedTask;
-                }
+                case 1:
+                    // Right
+                    _world.SetComponent(newRoot, new Rotation(180));
+                    break;
+                case 2:
+                    // Down
+                    _world.SetComponent(newRoot, new Rotation(90));
+                    break;
+                case 3:
+                    // Up
+                    _world.SetComponent(newRoot, new Rotation(270));
+                    break;
+                default:
+                    // Default to left
+                    break;
             }
+            return ValueTask.CompletedTask;
         }
 
         _isPressed = spacePressed;
