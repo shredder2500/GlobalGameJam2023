@@ -36,7 +36,8 @@ public class TreeSetupSystem : ISystem, IDisposable
         _world.SetComponent(treeEntity, _spriteSheet.GetSprite(21, new (3, 3)));
         _world.SetComponent(treeEntity, new Size(new(PPU * 3, PPU * 3)));
         _world.SetComponent(treeEntity, new Score(0));
-        _world.SetComponent(treeEntity, new EnergyManagement(5));
+        _world.SetComponent(treeEntity, new LastScore(0));
+        _world.SetComponent(treeEntity, new EnergyManagement(StartingEnergy));
 
         return ValueTask.CompletedTask;
     }
