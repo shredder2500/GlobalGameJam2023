@@ -36,7 +36,7 @@ internal class WindowLifetime : IHostedService
         var gl = GL.GetApi(_window);
         gl.Enable(GLEnum.Blend);
         gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-        gl.ClearColor(Color.Aqua);
+        gl.ClearColor((Color)new ColorConverter().ConvertFromString("#67a4c5"));
         _worldManager.CreateWorld(); 
         _worldManager.Init(cancellationToken).AsTask().Wait(cancellationToken);
         _window.Run(() =>
@@ -64,6 +64,6 @@ internal class WindowLifetime : IHostedService
     public Task StopAsync(CancellationToken cancellationToken)
     {
         _window.Close();
-        return Task.Delay(500, cancellationToken);
+        return Task.CompletedTask;
     }
 }

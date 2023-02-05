@@ -26,22 +26,30 @@ public class GridSetupSystem : ISystem, IDisposable
         _world = world;
         _resources = resources;
         _spriteSheet = new(resources.Load<Texture>("sprite.stumpy-tileset"), new(320, 128),
-                 new(16, 16), 12);
+                 new(16, 16));
     }
 
     public ValueTask Execute(CancellationToken cancellationToken)
     {
-        var halfWidth = GridWidth * CellWidth / 2;
-        var halfhHeight = GridHeight * CellHeight / 2;
-        for (var x = -halfWidth; x < halfWidth; x += CellWidth)
+        var halfWidth = GridWidth / 2;
+        var halfhHeight = GridHeight / 2;
+        for (var x = -halfWidth; x < halfWidth; x ++)
         {
-            for (var y = -halfhHeight; y < halfhHeight; y += CellHeight)
+            for (var y = -halfhHeight; y < halfhHeight; y ++)
             {
                 var entity = _world.CreateEntity();
                 _world.SetComponent(entity, new Node());
-                _world.SetComponent(entity, new Position(new(x, y)));
+                _world.SetComponent(entity, new Position(new(x * CellWidth, y * CellHeight)));
                 _world.SetComponent(entity, _spriteSheet.GetSprite(0));
                 _world.SetComponent(entity, new SpriteLayer(-1, 0));
+
+                if (y == halfhHeight - 1)
+                {
+                    var grassEntity = _world.CreateEntity();
+                    _world.SetComponent(grassEntity, new Position(new(x * CellWidth, y * CellHeight)));
+                    _world.SetComponent(grassEntity, _spriteSheet.GetSprite(20));
+                    _world.SetComponent(grassEntity, new SpriteLayer(-1, 1));
+                }
             }
         }
 
