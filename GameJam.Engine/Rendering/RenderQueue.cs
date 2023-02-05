@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Numerics;
 using GameJam.Engine.Rendering.Components;
 using GameJam.Engine.Resources;
@@ -11,7 +12,9 @@ namespace GameJam.Engine.Rendering;
 
 internal class RenderQueue : IRenderQueue, IDisposable
 {
+    // TODO: Combine
     private readonly PriorityQueue<(Sprite, Vector2D<int>, Vector2D<int>, float, Vector2), SpriteLayer> _renderQueue;
+    private readonly PriorityQueue<(Text, Vector2D<int>, Vector2D<int>, float, Vector2), SpriteLayer> _textRenderQueue;
     private readonly IWindow _window;
     private readonly GL _gl;
     private readonly Shader _shader;
@@ -26,6 +29,7 @@ internal class RenderQueue : IRenderQueue, IDisposable
     private readonly BufferObject<float> _vbo;
     private readonly BufferObject<uint> _ebo;
     private readonly VertexArrayObject<float, uint> _vao;
+    private readonly BitmapFont _font;
     
     private const float Min = 0;
     private const float Max = 1;
@@ -47,13 +51,18 @@ internal class RenderQueue : IRenderQueue, IDisposable
         2, 3, 1
     };
 
-    public RenderQueue(IWindow window, IResourceManager resources, IMainThreadDispatcher dispatcher)
+    private readonly BitmapRenderer _bitmapRenderer;
+
+    public RenderQueue(IWindow window, IResourceManager resources, IMainThreadDispatcher dispatcher, BitmapRenderer bitmapRenderer)
     {
         _window = window;
         _resources = resources;
         _dispatcher = dispatcher;
+        _bitmapRenderer = bitmapRenderer;
         _renderQueue = new(new SpriteLayerComparer());
+        _textRenderQueue = new(new SpriteLayerComparer());
         _shader = resources.Load<Shader>("shader.sprite");
+        _font = resources.Load<BitmapFont>("font.forte");
 
         _gl = GL.GetApi(window);
         
@@ -87,6 +96,16 @@ internal class RenderQueue : IRenderQueue, IDisposable
     {
         lock (_renderQueue) {
             _renderQueue.Enqueue((sprite, pos, size, rotation, pivot.Value), layer);
+        }
+    }
+
+    public void Enqueue(Text text, SpriteLayer layer, Vector2D<int> pos, Vector2D<int> size, float rotation,
+        Pivot pivot)
+    {
+        lock (_textRenderQueue)
+        {
+            Console.WriteLine("queuing Text");
+            _textRenderQueue.Enqueue((text, pos, size, rotation, pivot.Value), layer);
         }
     }
 
@@ -133,6 +152,19 @@ internal class RenderQueue : IRenderQueue, IDisposable
                         _gl.UniformMatrix4(location, 1, false, (float*)&value);
                 }
                 _vao.UnBind();
+            }
+        });
+        
+        _dispatcher.Enqueue(() =>
+        {
+            lock (_textRenderQueue)
+            {
+                while (_textRenderQueue.TryDequeue(out var x, out _))
+                {
+                    var (text, pos, size, rot, pivot) = x;
+                    Console.WriteLine($"Rendering Text {text}");
+                    _bitmapRenderer.RenderText(new(pos.X, pos.Y), text, _font, Color.White);
+                }
             }
         });
     }
