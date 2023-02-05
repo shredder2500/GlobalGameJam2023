@@ -82,50 +82,57 @@ internal class RenderQueue : IRenderQueue, IDisposable
         }
     }
 
-    public void Enqueue(Sprite sprite, SpriteLayer layer, Vector2D<int> pos, Vector2D<int> size, float rotation) =>
-        _renderQueue.Enqueue((sprite, pos, size, rotation), layer);
+    public void Enqueue(Sprite sprite, SpriteLayer layer, Vector2D<int> pos, Vector2D<int> size, float rotation)
+    {
+        lock (_renderQueue) {
+            _renderQueue.Enqueue((sprite, pos, size, rotation), layer);
+        }
+    }
 
     public unsafe void Render(Camera camera, Vector2D<int> position)
     {
         _dispatcher.Enqueue(() =>
         {
-            var camSize = camera.Size;
-
-            var aspectRatio = (float)_window.Size.X / _window.Size.Y;
-            var width = aspectRatio * camSize;
-
-            var right = width / 2;
-            var left = -right;
-            var top = camSize / 2;
-            var bottom = -top;
-
-            var view = Matrix4x4.CreateLookAt(new(position.X, position.Y, 1), new(position.X, position.Y, -1),
-                Vector3.UnitY) * Matrix4x4.CreateRotationZ(DegreesToRadians(0));
-            var projection = Matrix4x4.CreateOrthographicOffCenter(left, right, bottom, top, -1, 1);
-            _gl.UseProgram(_shader.Handle);
-            _vao.Bind();
-            while (_renderQueue.TryDequeue(out var x, out _))
+            lock (_renderQueue)
             {
-                var (sprite, pos, size, rot) = x;
-                _vbo.Upload(Vertices(sprite.Uv));
-                _gl.Uniform1(_uTextureLocation, 0);
-                _gl.BindTexture(TextureTarget.Texture2D, sprite.Texture.Handle);
-                _gl.ActiveTexture(TextureUnit.Texture0);
-    
-                SetMatrix(_uViewLocation, view);
-                SetMatrix(_uProjectionLocation, projection);
-    
-                var model = Matrix4x4.Identity * Matrix4x4.CreateScale(size.X, size.Y, 1) *
-                            Matrix4x4.CreateRotationZ(DegreesToRadians(0)) *
-                            Matrix4x4.CreateTranslation(pos.X, pos.Y, 0);
-                SetMatrix(_uModelLocation, model);
-    
-                _gl.DrawElements(PrimitiveType.Triangles, (uint) Indices.Length, DrawElementsType.UnsignedInt, null);
-    
-                void SetMatrix(int location, Matrix4x4 value) =>
-                    _gl.UniformMatrix4(location, 1, false, (float*)&value);
+                var camSize = camera.Size;
+
+                var aspectRatio = (float)_window.Size.X / _window.Size.Y;
+                var width = aspectRatio * camSize;
+
+                var right = width / 2;
+                var left = -right;
+                var top = camSize / 2;
+                var bottom = -top;
+
+                var view = Matrix4x4.CreateLookAt(new(position.X, position.Y, 1), new(position.X, position.Y, -1),
+                    Vector3.UnitY) * Matrix4x4.CreateRotationZ(DegreesToRadians(0));
+                var projection = Matrix4x4.CreateOrthographicOffCenter(left, right, bottom, top, -1, 1);
+                _gl.UseProgram(_shader.Handle);
+                _vao.Bind();
+                while (_renderQueue.TryDequeue(out var x, out _))
+                {
+                    var (sprite, pos, size, rot) = x;
+                    _vbo.Upload(Vertices(sprite.Uv));
+                    _gl.Uniform1(_uTextureLocation, 0);
+                    _gl.BindTexture(TextureTarget.Texture2D, sprite.Texture.Handle);
+                    _gl.ActiveTexture(TextureUnit.Texture0);
+
+                    SetMatrix(_uViewLocation, view);
+                    SetMatrix(_uProjectionLocation, projection);
+
+                    var model = Matrix4x4.Identity * Matrix4x4.CreateScale(size.X, size.Y, 1) *
+                                Matrix4x4.CreateRotationZ(DegreesToRadians(0)) *
+                                Matrix4x4.CreateTranslation(pos.X, pos.Y, 0);
+                    SetMatrix(_uModelLocation, model);
+
+                    _gl.DrawElements(PrimitiveType.Triangles, (uint)Indices.Length, DrawElementsType.UnsignedInt, null);
+
+                    void SetMatrix(int location, Matrix4x4 value) =>
+                        _gl.UniformMatrix4(location, 1, false, (float*)&value);
+                }
+                _vao.UnBind();
             }
-            _vao.UnBind();
         });
     }
 

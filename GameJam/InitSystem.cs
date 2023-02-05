@@ -1,3 +1,4 @@
+using GameJam.Components;
 using GameJam.Engine.Components;
 using GameJam.Engine.Rendering;
 using GameJam.Engine.Rendering.Components;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
+using System.Security.Cryptography;
 
 namespace GameJam;
 
@@ -31,10 +33,48 @@ public class InitSystem : IHostedService
 
             var camEntity = world.CreateEntity();
             world.SetComponent(camEntity, new Camera(200));
-            world.SetComponent(camEntity, new Position(new(0, 0)));
+            world.SetComponent(camEntity, new Position(new(50, 50)));
+
+
+            //CreateGrid(10, 10);
+            foreach (var idx in Enumerable.Range(0, 100))
+            {
+                var x = world.CreateEntity();
+                world.SetComponent(x, new Position(new Vector2D<int>((idx / 10) * 16, (idx % 10) * 16)));
+                world.SetComponent(x, spriteSheet.GetSprite(new Random().Next(0, 96)));
+                world.SetComponent(x, new Size(new(16, 16)));
+                world.SetComponent(x, new Rotation(0));
+                world.SetComponent(x, new SpriteLayer(0, 0));
+            }
+
+
             
+            void CreateGrid(int width, int height)
+            {
+                foreach (var idx in Enumerable.Range(0, width * height))
+                {
+                    var x = idx / width;
+                    var y = idx % width;
+                    var nodeEntity = world.CreateEntity();
+                    world.SetComponent(nodeEntity, new Node());
+                    world.SetComponent(nodeEntity, new Position(new Vector2D<int>(x, y)));
+
+                    
+                    CreateRoot(x, y, nodeEntity);
+                }
+            }
+
+            void CreateRoot(int x, int y, Entity nodeEntity)
+            {
+                var rootEntity = world.CreateEntity();
+                world.SetComponent(rootEntity, new Position(new Vector2D<int>(x, y)));
+                //world.SetComponent(rootEntity, new Sprite(spriteSheet, new System.Numerics.Vector4(0,0,1,1)));
+                world.SetComponent(rootEntity, new Rotation(0));
+                world.SetComponent(rootEntity, new SpriteLayer(0, 0));
+            }
         };
     }
+    
 
     public ValueTask Execute(CancellationToken cancellationToken)
     {

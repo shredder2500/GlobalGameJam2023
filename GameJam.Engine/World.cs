@@ -21,7 +21,7 @@ internal class World : IWorld
         _actionQueue.Enqueue(new SetComponentAction<T>(entity, value, _entityBuckets, _entityBucketMap), 1);
     }
 
-    public void RemoveComponent<T>(Entity entity, T value) where T : unmanaged
+    public void RemoveComponent<T>(Entity entity) where T : unmanaged
     {
         _actionQueue.Enqueue(new RemoveComponentAction<T>(entity, _entityBuckets, _entityBucketMap), 2);
     }
