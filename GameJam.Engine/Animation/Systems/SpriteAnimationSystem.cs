@@ -4,6 +4,8 @@ namespace GameJam.Engine.Animation.Systems;
 
 public class SpriteAnimationSystem : ISystem
 {
+    public GamePhase Phase => GamePhase.Simulation;
+
     private readonly IWorld _world;
     private readonly IGameTime _time;
 

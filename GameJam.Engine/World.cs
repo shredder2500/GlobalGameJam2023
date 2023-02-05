@@ -55,5 +55,7 @@ internal class World : IWorld
         {
             action.Execute();
         }
+
+        _entityBuckets.RemoveAll(x => !x.GetIndices().Any());
     }
 }

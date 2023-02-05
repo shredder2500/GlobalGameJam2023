@@ -43,13 +43,14 @@ public class GridSetupSystem : ISystem, IDisposable
                 _world.SetComponent(entity, new Position(new(x * cellWidth, y * cellHeight)));
                 _world.SetComponent(entity, _spriteSheet.GetSprite(0));
                 _world.SetComponent(entity, new SpriteLayer(-1, 0));
+                
+                if (x == 0 && y == halfhHeight - 2)
+                {
+                    _world.SetComponent(entity, new Active());
+                }
 
                 if (y == halfhHeight - 1)
                 {
-                    if (x == 0)
-                    {
-                        _world.SetComponent(entity, new Active());
-                    }
 
                     var grassEntity = _world.CreateEntity();
                     _world.SetComponent(grassEntity, new Position(new(x * cellWidth, y * cellHeight)));
