@@ -1,5 +1,6 @@
 using GameJam.Components;
 using GameJam.Engine.Components;
+using GameJam.Engine.Rendering;
 using GameJam.Engine.Rendering.Components;
 using GameJam.Engine.Resources;
 using Microsoft.Extensions.Hosting;
@@ -20,13 +21,13 @@ public class InitSystem : IHostedService
         {
             logger.LogInformation("Init Game");
             var world = worldManager.CreateWorld();
-            var spriteSheet = resources.Load<Texture>("sprite.stumpy-tileset");
-            Console.WriteLine(spriteSheet.Handle);
+            var spriteSheet = new SpriteSheet(resources.Load<Texture>("sprite.stumpy-tileset"), new(192, 128),
+                new(16, 16), 12);
             logger.LogInformation("Creating Entity");
             var entity = world.CreateEntity();
             world.SetComponent(entity, new Position(new(0, 0)));
-            world.SetComponent(entity, new Sprite(spriteSheet, new(0, 0, 1, 1)));
-            world.SetComponent(entity, new Size(new(800, 600)));
+            world.SetComponent(entity, spriteSheet.GetSprite(9));
+            world.SetComponent(entity, new Size(new(16, 16)));
             world.SetComponent(entity, new Rotation(0));
             world.SetComponent(entity, new SpriteLayer(0, 0));
 

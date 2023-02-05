@@ -42,11 +42,11 @@ internal class Render2DSystem : ISystem
         var bucket = _world.GetEntityBuckets()
             .FirstOrDefault(x => x.HasComponent<Camera>());
 
-        var camera = bucket != null ? bucket.GetComponent<Camera>(0) : new(5);
+        var camera = bucket != null ? bucket.GetComponent<Camera>(0) ?? new(5) : new(5);
         Vector2D<int> position = bucket != null
             ? bucket.GetComponent<Position>(0) ?? new Vector2D<int>(0, 0)
             : new Vector2D<int>(0, 0);
         
-        _renderQueue.Render(camera!.Value, position);
+        _renderQueue.Render(camera, position);
     }
 }
