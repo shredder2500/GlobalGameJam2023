@@ -53,11 +53,16 @@ internal class AddRootSystem : ISystem, IDisposable
         {
             var playerStatus = _world.GetEntityBuckets()
                 .Where(x => x.HasComponent<EnergyManagement>())
-                .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<EnergyManagement>(i))))
+                .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<LastEnergy>(i), x.GetComponent<EnergyManagement>(i))))
                 .SelectMany(x => x)
                 .FirstOrDefault();
 
-            if (playerStatus.Item2 == null || playerStatus.Item2.Value <= 0) return ValueTask.CompletedTask;
+            _world.SetComponent(playerStatus.Item1, new LastEnergy(playerStatus.Item3!.Value));
+
+            if (playerStatus.Item3 == null || playerStatus.Item3.Value <= 0)
+            {
+                return ValueTask.CompletedTask;
+            }
 
             // Get active node's position
             var activeNode = _world.GetEntityBuckets()
@@ -159,15 +164,24 @@ internal class AddRootSystem : ISystem, IDisposable
         {
             var player = _world.GetEntityBuckets()
                 .Where(x => x.HasComponent<EnergyManagement>())
-                .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<EnergyManagement>(i))))
+                .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<LastEnergy>(i), x.GetComponent<EnergyManagement>(i))))
                 .SelectMany(x => x)
                 .FirstOrDefault();
 
-            if (player.Item2 != null)
+
+
+            if (player.Item2 != null && player.Item3 != null)
             {
-                int currentEnergy = player.Item2.Value;
+                int currentEnergy = player.Item3.Value;
                 _world.SetComponent(player.Item1, new EnergyManagement(currentEnergy - amount));
+                _world.SetComponent(player.Item1, new LastEnergy(currentEnergy));
             }
+        }
+
+        // Check if there was
+        bool CheckEnergyState()
+        {
+            return false;
         }
 
         return ValueTask.CompletedTask;

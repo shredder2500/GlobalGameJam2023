@@ -67,7 +67,6 @@ public class UndergroundSetupSystem : ISystem, IDisposable
         foreach (var point in points)
         {
             var rndValue = random.Next(0, 101);
-            Console.WriteLine(rndValue);
             var (sprite, onCreate) = GetRandomSprite();
             
             var underground = _world.CreateEntity();

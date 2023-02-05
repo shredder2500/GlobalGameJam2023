@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using static GameJam.Config;
 
 namespace GameJam.Systems;
 
@@ -40,17 +41,17 @@ public class TreeSpriteStatusSystem : ISystem, IDisposable
     {
         var energyStatus = _world.GetEntityBuckets()
             .Where(x => x.HasComponent<EnergyManagement>() && x.HasComponent<Sprite>())
-            .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<EnergyManagement>(i))))
+            .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<LastEnergy>(i), x.GetComponent<EnergyManagement>(i))))
             .SelectMany(x => x)
             .FirstOrDefault();
 
-        if (energyStatus.Item2 == null) return ValueTask.CompletedTask;
+        if (energyStatus.Item2 == null || energyStatus.Item3 == null) return ValueTask.CompletedTask;
 
-        int energy = energyStatus.Item2.Value;
-        if (energy <= 0)
+        int energyDiff = energyStatus.Item3.Value - energyStatus.Item2.Value;
+        if (energyDiff == 0 && energyStatus.Item3.Value <= 0)
         {
             _world.SetComponent(energyStatus.Item1, _treeDeadSprites[0]);
-            _world.SetComponent(energyStatus.Item1, new Size(new(48, 48)));
+            _world.SetComponent(energyStatus.Item1, new Size(new(PPU * 3, PPU * 3)));
         }
   
         return ValueTask.CompletedTask;
