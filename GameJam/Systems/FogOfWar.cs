@@ -49,7 +49,7 @@ public class FogOfWar : ISystem
         {
             var xDist = Math.Abs(root1.X - root2.X);
             var yDist = Math.Abs(root1.Y - root2.Y);
-            return (xDist + yDist) == PPU * FogOfWarDistance;
+            return (xDist + yDist) <= PPU * FogOfWarDistance;
         }
     }
 }
