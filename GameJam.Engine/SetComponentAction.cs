@@ -50,6 +50,7 @@ internal class SetComponentAction<T> : IEntityAction where T : unmanaged
                          ?? NewBucket(archetype);
             
             var newEntityIdx = entityRecord.Bucket.MoveTo(bucket, entityRecord.entityIdx);
+            bucket.SetComponent(newEntityIdx, _value);
             _entityRecords[entityRecord.Entity] = entityRecord with
             {
                 Bucket = bucket,

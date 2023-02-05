@@ -40,6 +40,8 @@ internal class World : IWorld
 
     public void Sync()
     {
+        if (_actionQueue.Count > 0)
+            Console.WriteLine($"sync {_actionQueue.Count}");
         while (_actionQueue.TryDequeue(out var action, out _))
         {
             action.Execute();
