@@ -25,7 +25,7 @@ public class GridSetupSystem : ISystem, IDisposable
     {
         _world = world;
         _resources = resources;
-        _spriteSheet = new(resources.Load<Texture>("sprite.stumpy-tileset"), new(192, 128),
+        _spriteSheet = new(resources.Load<Texture>("sprite.stumpy-tileset"), new(320, 128),
                  new(16, 16), 12);
     }
 
