@@ -1,4 +1,5 @@
 ﻿using GameJam.Components;
+using GameJam.Engine.Components;
 using GameJam.Engine.Rendering;
 using GameJam.Engine.Rendering.Components;
 using GameJam.Engine.Resources;
@@ -55,7 +56,7 @@ public class TreeSpriteStatusSystem : ISystem, IDisposable
                 .Where(x => x.HasComponent<Eye>())
                 .Select(x => x.GetIndices().Select(i => x.GetEntity(i)))
                 .SelectMany(x => x).FirstOrDefault();
-            _world.RemoveComponent<Sprite>(treeEyes);
+            _world.SetComponent(treeEyes, new Hidden());
         }
   
         return ValueTask.CompletedTask;
