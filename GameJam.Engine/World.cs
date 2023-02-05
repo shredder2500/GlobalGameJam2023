@@ -9,9 +9,11 @@ internal class World : IWorld
 
     public Entity CreateEntity()
     {
-        Entity newEntity = _nextId++;
-        _entityBucketMap.Add(newEntity, new(newEntity, null, 0));
-        return newEntity;
+        lock(_entityBucketMap){
+            Entity newEntity = _nextId++;
+            _entityBucketMap.Add(newEntity, new(newEntity, null, 0));
+            return newEntity;
+        }
     }
 
     public IEnumerable<IEntityBucket> GetEntityBuckets() => _entityBuckets;

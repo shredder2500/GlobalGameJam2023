@@ -19,8 +19,13 @@ static IHostBuilder CreateHostBuilder() =>
             services.AddScoped<ISystem, CameraSetupSystem>();
             services.AddScoped<ISystem, GridSetupSystem>();
             services.AddScoped<ISystem, ActiveSetupSystem>();
+            services.AddScoped<ISystem, RootSetupSystem>();
+            services.AddScoped<ISystem, UndergroundSetupSystem>();
+            services.AddScoped<ISystem, TreeSetupSystem>();
             services.AddScoped<ISystem, MoveActiveNodeSystem>();
             services.AddScoped<ISystem, ActiveSystem>();
+            services.AddScoped<ISystem, AddRootSystem>();
+            services.AddScoped<ISystem, WaterConsumption>();
         })
         .UseSerilog((_, _, loggerConfiguration) =>
         {

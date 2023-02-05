@@ -1,4 +1,7 @@
-﻿using GameJam.Engine.Rendering;
+﻿using GameJam.Components;
+using GameJam.Engine.Components;
+using GameJam.Engine.Rendering;
+using GameJam.Engine.Rendering.Components;
 using GameJam.Engine.Resources;
 using Silk.NET.OpenGL;
 using System;
@@ -17,7 +20,7 @@ public class RootSetupSystem : ISystem, IDisposable
     private readonly IResourceManager _resources;
     private readonly SpriteSheet _spriteSheet;
 
-    public RootSetupSystem(IWorld world, IResourceManager resources, SpriteSheet spriteSheet)
+    public RootSetupSystem(IWorld world, IResourceManager resources)
     {
         _world = world;
         _resources = resources;
@@ -35,7 +38,11 @@ public class RootSetupSystem : ISystem, IDisposable
         // Create three root entities as base
         for (int i = 0; i < 3; i++)
         {
-
+            var newRoot = _world.CreateEntity();
+            _world.SetComponent(newRoot, new Position(new(i * 16, 64)));
+            _world.SetComponent(newRoot, new SpriteLayer(0, 0));
+            _world.SetComponent(newRoot, _spriteSheet.GetSprite(i + 1));
+            _world.SetComponent(newRoot, new Root());
         }
 
         return ValueTask.CompletedTask;

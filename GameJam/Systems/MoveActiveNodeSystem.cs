@@ -98,8 +98,6 @@ public class MoveActiveNodeSystem : ISystem
 
             if (activeNode == null) return;
 
-            _logger.LogInformation("found active node");
-
             var (newActiveNode, something) = _world.GetEntityBuckets()
                 .Where(x => x.HasComponent<Node>() && x.HasComponent<Position>())
                 .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<Position>(i))))
@@ -113,8 +111,6 @@ public class MoveActiveNodeSystem : ISystem
 
             _world.RemoveComponent<Active>(entity);
             _world.SetComponent<Active>(newActiveNode, new());
-
-            _logger.LogInformation("new active node set");
         }
 
         return ValueTask.CompletedTask;

@@ -28,7 +28,7 @@ public class ActiveSetupSystem : ISystem, IDisposable
     {
         var initActive = _world.CreateEntity();
         _world.SetComponent(initActive, new Position(new (0, 0)));
-        _world.SetComponent(initActive, new SpriteLayer(0, 0));
+        _world.SetComponent(initActive, new SpriteLayer(1, 0));
         _world.SetComponent(initActive, _spriteSheet.GetSprite(87));
         _world.SetComponent(initActive, new Selector());
         _world.SetComponent(initActive, new Animation(_spriteSheet, 87, 88));
