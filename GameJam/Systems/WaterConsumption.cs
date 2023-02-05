@@ -56,7 +56,7 @@ public class WaterConsumption : ISystem, IDisposable
         {
             _world.RemoveComponent<Water>(entity);
             _world.SetComponent(entity, _spriteSheet.GetSprite(6));
-            IncreaseEnergy(1);
+            IncreaseEnergy(4);
         }
 
         void IncreaseEnergy(int amount)

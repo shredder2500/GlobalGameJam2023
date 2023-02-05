@@ -8,6 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using static GameJam.Config;
 using Silk.NET.OpenGL;
+using GameJam.Components;
+using GameJam.Engine.Components;
+using Silk.NET.Maths;
 
 namespace GameJam.Systems.Init;
 
@@ -28,6 +31,13 @@ public class UISetupSystem : ISystem, IDisposable
 
     public ValueTask Execute(CancellationToken cancellationToken)
     {
+        // Create UI entity
+        var textEntity = _world.CreateEntity();
+        _world.SetComponent(textEntity, new Position(new(0, 0)));
+        _world.SetComponent(textEntity, new SpriteLayer(100, 0));
+        _world.SetComponent(textEntity, new ScoreText());
+        _world.SetComponent<Text>(textEntity, "Score: 0");
+
         return ValueTask.CompletedTask;
     }
 

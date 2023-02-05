@@ -25,7 +25,6 @@ public class UndergroundSetupSystem : ISystem, IDisposable
     private readonly IWorld _world;
     private readonly SpriteSheet _spriteSheet;
     private readonly (Sprite sprite, int chance, Action<Entity> onCreate)[] _undergroundSprites;
-    private int spawnCount = 35;
 
     public UndergroundSetupSystem(IResourceManager resources, IWorld world, ILogger<UndergroundSetupSystem> logger)
     {
@@ -57,7 +56,7 @@ public class UndergroundSetupSystem : ISystem, IDisposable
 
         var points = new HashSet<Vector2D<int>>();
 
-        while (points.Count < spawnCount)
+        while (points.Count < SpawnCount)
         {
             var spawnX = random.Next(-(GridSize.X / 2), GridSize.X / 2) * PPU;
             var spawnY = random.Next(-(GridSize.Y / 2), (GridSize.Y - 1) / 2) * PPU;

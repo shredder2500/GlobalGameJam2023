@@ -1,6 +1,7 @@
 ﻿using GameJam;
 using GameJam.Systems;
 using GameJam.Systems.Init;
+using GameJam.Systems.UI;
 using Lamar.Microsoft.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,7 +23,10 @@ static IHostBuilder CreateHostBuilder() =>
             services.AddScoped<ISystem, RootSetupSystem>();
             services.AddScoped<ISystem, UndergroundSetupSystem>();
             services.AddScoped<ISystem, TreeSetupSystem>();
+            services.AddScoped<ISystem, UISetupSystem>();
+            services.AddScoped<ISystem, WaterDisplaySystem>();
             services.AddScoped<ISystem, MoveActiveNodeSystem>();
+            services.AddScoped<ISystem, ScoreDisplaySystem>();
             services.AddScoped<ISystem, ActiveSystem>();
             services.AddScoped<ISystem, AddRootSystem>();
             services.AddScoped<ISystem, WaterConsumption>();
