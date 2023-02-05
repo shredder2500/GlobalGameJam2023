@@ -2,33 +2,26 @@
 using GameJam.Engine.Components;
 using GameJam.Engine.Rendering;
 using GameJam.Engine.Resources;
-using Microsoft.Extensions.Logging;
 using Silk.NET.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-using static GameJam.Config;
-
 namespace GameJam.Systems;
 
-public class WaterConsumption : ISystem, IDisposable
+public class BugConsumption : ISystem, IDisposable
 {
-    private readonly ILogger _logger;
     private readonly IResourceManager _resources;
     private readonly IWorld _world;
     private readonly SpriteSheet _spriteSheet;
 
-    public WaterConsumption(IResourceManager resources, IWorld world, ILogger<WaterConsumption> logger)
+    public BugConsumption(IResourceManager resources, IWorld world)
     {
-        _logger = logger;
         _resources = resources;
         _world = world;
-        _spriteSheet = new(resources.Load<Texture>("sprite.stumpy-tileset"), StumpyTileSheetSize,
-            new(PPU, PPU));
+        _spriteSheet = new(resources.Load<Texture>("sprite.stumpy-tileset"), new(320, 128), new(16, 16));
     }
 
     public void Dispose()
@@ -44,21 +37,21 @@ public class WaterConsumption : ISystem, IDisposable
             .Select(x => x.GetIndices().Select(i => x.GetComponent<Position>(i)))
             .SelectMany(x => x);
 
-        var water = _world.GetEntityBuckets()
-            .Where(x => x.HasComponent<Water>() && x.HasComponent<Position>())
+        var bug = _world.GetEntityBuckets()
+            .Where(x => x.HasComponent<Bug>() && x.HasComponent<Position>())
             .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<Position>(i))))
             .SelectMany(x => x).Where(x =>
             {
                 return search.Contains(x.Item2);
-            }); 
+            });
 
-        foreach (var (entity, _) in water) 
+        foreach (var (entity, _) in bug)
         {
-            _world.RemoveComponent<Water>(entity);
-            _world.SetComponent(entity, _spriteSheet.GetSprite(6));
+            _world.RemoveComponent<Bug>(entity);
+            _world.SetComponent(entity, _spriteSheet.GetSprite(8));
             IncreaseScore(1);
         }
-        
+
         void IncreaseScore(int amount)
         {
             var player = _world.GetEntityBuckets()
@@ -66,15 +59,14 @@ public class WaterConsumption : ISystem, IDisposable
                 .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<Score>(i))))
                 .SelectMany(x => x)
                 .FirstOrDefault();
-            
-            if (player.Item2 != null) 
+
+            if (player.Item2 != null)
             {
                 int currentScore = player.Item2.Value;
-                _logger.LogInformation(currentScore.ToString());
                 _world.SetComponent(player.Item1, new Score(currentScore + amount));
             }
         }
 
-        return ValueTask.CompletedTask; 
+        return ValueTask.CompletedTask;
     }
 }

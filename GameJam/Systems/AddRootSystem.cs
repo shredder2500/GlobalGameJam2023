@@ -51,6 +51,14 @@ internal class AddRootSystem : ISystem, IDisposable
         var spacePressed = _inputContext.Keyboards[0].IsKeyPressed(Key.Space);
         if (spacePressed && !_isPressed)
         {
+            var playerStatus = _world.GetEntityBuckets()
+                .Where(x => x.HasComponent<EnergyManagement>())
+                .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<EnergyManagement>(i))))
+                .SelectMany(x => x)
+                .FirstOrDefault();
+
+            if (playerStatus.Item2 == null) return ValueTask.CompletedTask;
+
             // Get active node's position
             var activeNode = _world.GetEntityBuckets()
                 .Where(x => x.HasComponent<Active>() && x.HasComponent<Node>())
@@ -62,7 +70,7 @@ internal class AddRootSystem : ISystem, IDisposable
 
             // Check if there is a root already at active node location
             var rootPositionCheck = _world.GetEntityBuckets()
-                .Where(x => x.HasComponent<Root>())
+                .Where(x => x.HasComponent<Root>() || x.HasComponent<Stone>())
                 .Select(x => x.GetIndices().Select(i => x.GetComponent<Position>(i)))
                 .SelectMany(x => x);
 
@@ -143,6 +151,11 @@ internal class AddRootSystem : ISystem, IDisposable
                 return 3; // Up
             else
                 return 0; // Default to left in case something happens
+        }
+
+        void SubtractEnergy(int amount)
+        {
+
         }
 
         return ValueTask.CompletedTask;
