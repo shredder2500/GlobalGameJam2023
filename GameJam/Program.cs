@@ -30,6 +30,7 @@ static IHostBuilder CreateHostBuilder() =>
             services.AddScoped<ISystem, BugConsumption>();
             services.AddScoped<ISystem, CanPlaceIndicatorSystem>();
             services.AddScoped<ISystem, TreeSpriteStatusSystem>();
+            services.AddScoped<ISystem, PlayGameMusic>();
         })
         .UseSerilog((_, _, loggerConfiguration) =>
         {

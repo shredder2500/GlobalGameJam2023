@@ -1,5 +1,6 @@
 using System.Drawing;
 using GameJam.Engine.Animation.Systems;
+using GameJam.Engine.Audio;
 using GameJam.Engine.Rendering;
 using GameJam.Engine.Rendering.Systems;
 using GameJam.Engine.Resources;
@@ -37,6 +38,7 @@ public static class HostBuilderExts
         {
             AddResource<Texture, TextureLoader>();
             AddResource<Shader, ShaderLoader>();
+            AddResource<AudioClip, AudioClipLoader>();
             
             services.AddScoped<IResourceManager, ResourceManager>();
             services.AddSingleton<IWorldManager, WorldManager>();
