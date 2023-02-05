@@ -28,7 +28,7 @@ public static class HostBuilderExts
         return builder.ConfigureServices((_, services) =>
         {
             services.AddSingleton<IWindow>(window);
-            // services.AddSingleton(window.CreateInput());
+            services.AddScoped((_) => window.CreateInput());
         });
     }
 

@@ -3,6 +3,7 @@ using GameJam.Engine.Components;
 using GameJam.Engine.Rendering;
 using GameJam.Engine.Rendering.Components;
 using GameJam.Engine.Resources;
+using Silk.NET.Input;
 using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 
