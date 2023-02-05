@@ -56,22 +56,21 @@ public class WaterConsumption : ISystem, IDisposable
         {
             _world.RemoveComponent<Water>(entity);
             _world.SetComponent(entity, _spriteSheet.GetSprite(6));
-            IncreaseScore(1);
+            IncreaseEnergy(1);
         }
-        
-        void IncreaseScore(int amount)
+
+        void IncreaseEnergy(int amount)
         {
             var player = _world.GetEntityBuckets()
-                .Where(x => x.HasComponent<Score>())
-                .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<Score>(i))))
+                .Where(x => x.HasComponent<EnergyManagement>())
+                .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<EnergyManagement>(i))))
                 .SelectMany(x => x)
                 .FirstOrDefault();
-            
-            if (player.Item2 != null) 
+
+            if (player.Item2 != null)
             {
-                int currentScore = player.Item2.Value;
-                _logger.LogInformation(currentScore.ToString());
-                _world.SetComponent(player.Item1, new Score(currentScore + amount));
+                int currentEnergy = player.Item2.Value;
+                _world.SetComponent(player.Item1, new EnergyManagement(currentEnergy + amount));
             }
         }
 

@@ -29,6 +29,7 @@ static IHostBuilder CreateHostBuilder() =>
             services.AddScoped<ISystem, RichSoilConsumption>();
             services.AddScoped<ISystem, BugConsumption>();
             services.AddScoped<ISystem, CanPlaceIndicatorSystem>();
+            services.AddScoped<ISystem, TreeSpriteStatusSystem>();
         })
         .UseSerilog((_, _, loggerConfiguration) =>
         {

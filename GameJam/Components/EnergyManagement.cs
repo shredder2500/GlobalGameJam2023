@@ -8,4 +8,8 @@ using System.Threading.Tasks;
 
 namespace GameJam.Components;
 
-public record struct EnergyManagement(int Value);
+public record struct EnergyManagement(int Value)
+{
+    public static implicit operator int(EnergyManagement energy) => energy.Value;
+    public static implicit operator EnergyManagement(int value) => new(value);
+};

@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using static GameJam.Config;
 namespace GameJam.Systems;
 
 internal class AddRootSystem : ISystem, IDisposable
@@ -33,8 +33,8 @@ internal class AddRootSystem : ISystem, IDisposable
         _world = world;
         _resources = resources;
         _inputContext = inputContext;
-        _spriteSheet = new(resources.Load<Texture>("sprite.stumpy-tileset"), new(320, 128),
-         new(16, 16));
+        _spriteSheet = new(resources.Load<Texture>("sprite.stumpy-tileset"), StumpyTileSheetSize,
+    new(PPU, PPU));
         _rootSprites = new[]{ _spriteSheet.GetSprite(104, new(2, 1)), 
                               _spriteSheet.GetSprite(124, new(2, 1)),
                               _spriteSheet.GetSprite(144, new(2, 1))};
@@ -57,7 +57,7 @@ internal class AddRootSystem : ISystem, IDisposable
                 .SelectMany(x => x)
                 .FirstOrDefault();
 
-            if (playerStatus.Item2 == null) return ValueTask.CompletedTask;
+            if (playerStatus.Item2 == null || playerStatus.Item2.Value <= 0) return ValueTask.CompletedTask;
 
             // Get active node's position
             var activeNode = _world.GetEntityBuckets()
@@ -122,6 +122,8 @@ internal class AddRootSystem : ISystem, IDisposable
                     // Default to left
                     break;
             }
+
+            SubtractEnergy(1);
             return ValueTask.CompletedTask;
         }
 
@@ -155,7 +157,17 @@ internal class AddRootSystem : ISystem, IDisposable
 
         void SubtractEnergy(int amount)
         {
+            var player = _world.GetEntityBuckets()
+                .Where(x => x.HasComponent<EnergyManagement>())
+                .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<EnergyManagement>(i))))
+                .SelectMany(x => x)
+                .FirstOrDefault();
 
+            if (player.Item2 != null)
+            {
+                int currentEnergy = player.Item2.Value;
+                _world.SetComponent(player.Item1, new EnergyManagement(currentEnergy - amount));
+            }
         }
 
         return ValueTask.CompletedTask;
