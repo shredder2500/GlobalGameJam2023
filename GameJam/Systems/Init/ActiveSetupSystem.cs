@@ -7,6 +7,8 @@ using GameJam.Engine.Resources;
 using Microsoft.Extensions.Logging;
 using Silk.NET.OpenGL;
 
+using static GameJam.Config;
+
 namespace GameJam.Systems.Init;
 
 public class ActiveSetupSystem : ISystem, IDisposable
@@ -20,8 +22,8 @@ public class ActiveSetupSystem : ISystem, IDisposable
     {
         _world = world;
         _resources = resources;
-        _spriteSheet = new(resources.Load<Texture>("sprite.stumpy-tileset"), new(320, 128),
-                 new(16, 16));
+        _spriteSheet = new(resources.Load<Texture>("sprite.stumpy-tileset"), StumpyTileSheetSize,
+                 new(PPU, PPU));
     }
 
     public ValueTask Execute(CancellationToken cancellationToken)
@@ -32,6 +34,7 @@ public class ActiveSetupSystem : ISystem, IDisposable
         _world.SetComponent(initActive, _spriteSheet.GetSprite(87));
         _world.SetComponent(initActive, new Selector());
         _world.SetComponent(initActive, new Animation(_spriteSheet, 87, 88));
+        _world.SetComponent(initActive, new LoopAnimation());
         
         return ValueTask.CompletedTask;
     }

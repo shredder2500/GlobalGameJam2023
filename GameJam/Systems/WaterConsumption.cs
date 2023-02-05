@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using static GameJam.Config;
+
 namespace GameJam.Systems;
 
 public class WaterConsumption : ISystem, IDisposable
@@ -21,7 +23,8 @@ public class WaterConsumption : ISystem, IDisposable
     {
         _resources = resources;
         _world = world;
-        _spriteSheet = new(resources.Load<Texture>("sprite.stumpy-tileset"), new(320, 128), new(16, 16));
+        _spriteSheet = new(resources.Load<Texture>("sprite.stumpy-tileset"), StumpyTileSheetSize,
+            new(PPU, PPU));
     }
 
     public void Dispose()
