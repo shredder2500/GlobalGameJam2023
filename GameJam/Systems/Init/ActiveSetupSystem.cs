@@ -1,4 +1,5 @@
 ﻿using GameJam.Components;
+using GameJam.Engine.Animation.Components;
 using GameJam.Engine.Components;
 using GameJam.Engine.Rendering;
 using GameJam.Engine.Rendering.Components;
@@ -30,6 +31,7 @@ public class ActiveSetupSystem : ISystem, IDisposable
         _world.SetComponent(initActive, new SpriteLayer(1, 0));
         _world.SetComponent(initActive, _spriteSheet.GetSprite(87));
         _world.SetComponent(initActive, new Selector());
+        _world.SetComponent(initActive, new Animation(_spriteSheet, 87, 88));
         
         return ValueTask.CompletedTask;
     }

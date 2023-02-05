@@ -62,7 +62,7 @@ public class GridSetupSystem : ISystem, IDisposable
         }
 
         var treeEntity = _world.CreateEntity();
-        _world.SetComponent(treeEntity, new Position(new(-16, (halfhHeight) * 16)));
+        _world.SetComponent(treeEntity, new Position(new(0, (halfhHeight + 1) * 16)));
         _world.SetComponent(treeEntity, _spriteSheet.GetSprite(21, new (3, 3)));
         _world.SetComponent(treeEntity, new Size(new (16 * 3, 16 * 3)));
 

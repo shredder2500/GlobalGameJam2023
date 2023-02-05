@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Drawing;
+using GameJam.Engine.Animation.Systems;
 using GameJam.Engine.Rendering;
 using GameJam.Engine.Rendering.Systems;
 using GameJam.Engine.Resources;
@@ -48,6 +49,7 @@ public static class HostBuilderExts
             services.AddSingleton<IMainThreadDispatcher, MainThreadDispatcher>();
 
             services.AddScoped<ISystem, Render2DSystem>();
+            // services.AddScoped<ISystem, SpriteAnimationSystem>();
 
             void AddResource<T, TLoader>() where TLoader : class, IResourceLoader<T>
             {
