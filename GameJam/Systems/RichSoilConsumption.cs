@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace GameJam.Systems;
 
-public class WaterConsumption : ISystem, IDisposable
+public class RichSoilConsumption : ISystem, IDisposable
 {
     private readonly IResourceManager _resources;
     private readonly IWorld _world;
     private readonly SpriteSheet _spriteSheet;
 
-    public WaterConsumption(IResourceManager resources, IWorld world)
+    public RichSoilConsumption(IResourceManager resources, IWorld world)
     {
         _resources = resources;
         _world = world;
@@ -37,21 +37,21 @@ public class WaterConsumption : ISystem, IDisposable
             .Select(x => x.GetIndices().Select(i => x.GetComponent<Position>(i)))
             .SelectMany(x => x);
 
-        var water = _world.GetEntityBuckets()
-            .Where(x => x.HasComponent<Water>() && x.HasComponent<Position>())
+        var soil = _world.GetEntityBuckets()
+            .Where(x => x.HasComponent<RichSoil>() && x.HasComponent<Position>())
             .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<Position>(i))))
             .SelectMany(x => x).Where(x =>
             {
                 return search.Contains(x.Item2);
-            }); 
+            });
 
-        foreach (var (entity, _) in water) 
+        foreach (var (entity, _) in soil)
         {
-            _world.RemoveComponent<Water>(entity);
-            _world.SetComponent(entity, _spriteSheet.GetSprite(6));
+            _world.RemoveComponent<RichSoil>(entity);
+            _world.SetComponent(entity, _spriteSheet.GetSprite(0));
 
         }
 
-        return ValueTask.CompletedTask; 
+        return ValueTask.CompletedTask;
     }
 }

@@ -25,6 +25,7 @@ static IHostBuilder CreateHostBuilder() =>
             services.AddScoped<ISystem, MoveActiveNodeSystem>();
             services.AddScoped<ISystem, ActiveSystem>();
             services.AddScoped<ISystem, AddRootSystem>();
+            services.AddScoped<ISystem, WaterConsumption>();
         })
         .UseSerilog((_, _, loggerConfiguration) =>
         {
