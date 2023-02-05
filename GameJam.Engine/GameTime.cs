@@ -15,7 +15,7 @@ public class GameTime : IGameTime
 
     public void Update()
     {
-        DeltaTime = _timer.Elapsed.TotalMilliseconds;
+        DeltaTime = _timer.Elapsed.TotalSeconds;
         _timer.Restart();
     }
 }

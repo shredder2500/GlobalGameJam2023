@@ -47,7 +47,7 @@ public static class HostBuilderExts
             services.AddSingleton<IMainThreadDispatcher, MainThreadDispatcher>();
 
             services.AddScoped<ISystem, Render2DSystem>();
-            // services.AddScoped<ISystem, SpriteAnimationSystem>();
+            services.AddScoped<ISystem, SpriteAnimationSystem>();
 
             void AddResource<T, TLoader>() where TLoader : class, IResourceLoader<T>
             {

@@ -4,12 +4,8 @@ using GameJam.Engine.Rendering;
 using GameJam.Engine.Rendering.Components;
 using GameJam.Engine.Resources;
 using Silk.NET.OpenGL;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Resources;
-using System.Text;
-using System.Threading.Tasks;
+
+using static GameJam.Config;
 
 namespace GameJam.Systems.Init;
 
@@ -24,8 +20,8 @@ public class RootSetupSystem : ISystem, IDisposable
     {
         _world = world;
         _resources = resources;
-        _spriteSheet = new(resources.Load<Texture>("sprite.stumpy-tileset"), new(320, 128),
-                new(16, 16));
+        _spriteSheet = new(resources.Load<Texture>("sprite.stumpy-tileset"), StumpyTileSheetSize,
+            new(PPU, PPU));
     }
 
     public void Dispose()
@@ -39,7 +35,7 @@ public class RootSetupSystem : ISystem, IDisposable
         for (int i = 0; i < 3; i++)
         {
             var newRoot = _world.CreateEntity();
-            _world.SetComponent(newRoot, new Position(new(i * 16, 64)));
+            _world.SetComponent(newRoot, new Position(new((i - 1) * PPU, PPU * 4)));
             _world.SetComponent(newRoot, new SpriteLayer(0, 0));
             _world.SetComponent(newRoot, _spriteSheet.GetSprite(i + 1));
             _world.SetComponent(newRoot, new Root());

@@ -3,17 +3,18 @@ using GameJam.Engine.Components;
 using GameJam.Engine.Rendering;
 using GameJam.Engine.Resources;
 using Silk.NET.OpenGL;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using static GameJam.Config;
 
 namespace GameJam.Systems.Init;
 
 public class TreeSetupSystem : ISystem, IDisposable
 {
     public GamePhase Phase => GamePhase.Init;
+<<<<<<< HEAD
+=======
+
+>>>>>>> df9a09a41e4cf0fe71efde4ed017fcd097ae846c
     private readonly IResourceManager _resources;
     private readonly SpriteSheet _spriteSheet;
     private readonly IWorld _world;
@@ -22,8 +23,8 @@ public class TreeSetupSystem : ISystem, IDisposable
     {
         _world = world;
         _resources = resources;
-        _spriteSheet = new(_resources.Load<Texture>("sprite.stumpy-tileset"), new(320, 128),
-                 new(16, 16));
+        _spriteSheet = new(resources.Load<Texture>("sprite.stumpy-tileset"), StumpyTileSheetSize,
+            new(PPU, PPU));
     }
 
     public void Dispose()
@@ -33,12 +34,14 @@ public class TreeSetupSystem : ISystem, IDisposable
 
     public ValueTask Execute(CancellationToken cancellationToken)
     {
-        var player = _world.CreateEntity();
-        _world.SetComponent(player, new Score(0));
-        _world.SetComponent(player, new EnergyManagement(5));
+        // Create Stumpy
+        var treeEntity = _world.CreateEntity();
+        _world.SetComponent(treeEntity, new Position(new(0, ((GridSize.Y / 2) + 1) * PPU)));
+        _world.SetComponent(treeEntity, _spriteSheet.GetSprite(21, new (3, 3)));
+        _world.SetComponent(treeEntity, new Size(new(PPU * 3, PPU * 3)));
+        _world.SetComponent(treeEntity, new Score(0));
+        _world.SetComponent(treeEntity, new EnergyManagement(5));
 
         return ValueTask.CompletedTask;
-
-        
     }
 }

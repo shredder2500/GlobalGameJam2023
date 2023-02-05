@@ -13,6 +13,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using static GameJam.Config;
+
 namespace GameJam.Systems.Init;
 
 public class UndergroundSetupSystem : ISystem, IDisposable
@@ -30,8 +32,8 @@ public class UndergroundSetupSystem : ISystem, IDisposable
         _logger = logger;
         _resources = resources;
         _world = world;
-        _spriteSheet = new(resources.Load<Texture>("sprite.stumpy-tileset"), new(320, 128),
-        new(16, 16));
+        _spriteSheet = new(resources.Load<Texture>("sprite.stumpy-tileset"), StumpyTileSheetSize,
+            new(PPU, PPU));
         _undergroundSprites = new (Sprite sprite, int chance, Action<Entity> onCreate)[] {
                 (_spriteSheet.GetSprite(4), 10, x => world.SetComponent(x, new RichSoil())), 
                  (_spriteSheet.GetSprite(5), 40, x => world.SetComponent(x, new Water())), 
@@ -57,8 +59,8 @@ public class UndergroundSetupSystem : ISystem, IDisposable
 
         while (points.Count < spawnCount)
         {
-            var spawnX = random.Next(-6, 7) * 16;
-            var spawnY = random.Next(-5, 3) * 16;
+            var spawnX = random.Next(-(GridSize.X / 2), GridSize.X / 2) * PPU;
+            var spawnY = random.Next(-(GridSize.Y / 2), (GridSize.Y - 1) / 2) * PPU;
             
             points.Add(new(spawnX, spawnY));
         }

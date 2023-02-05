@@ -21,7 +21,7 @@ public class SpriteAnimationSystem : ISystem
                 x.GetEntity(i),
                 x.GetComponent<Components.Animation>(i),
                 x.GetComponent<AnimationSpeed>(i) ?? new AnimationSpeed(.25),
-                x.GetComponent<AnimationIdx>(i) ?? new AnimationIdx(0),
+                x.GetComponent<AnimationIdx>(i) ?? new AnimationIdx(x.GetComponent<Components.Animation>(i)!.Value.StartIdx),
                 x.GetComponent<AnimationTime>(i) ?? new AnimationTime(0),
                 x.HasComponent<LoopAnimation>()
             ))).SelectMany(x => x);
@@ -34,13 +34,13 @@ public class SpriteAnimationSystem : ISystem
                 _world.SetComponent(entity, new AnimationTime(time.Value += _time.DeltaTime));
             else
             {
-                _world.SetComponent(entity, new AnimationTime(0));
+                _world.SetComponent(entity, new AnimationTime(Math.Min(.1, time.Value - speed.Value)));
 
                 if (animation!.Value.EndIdx == idx.Value && loop)
                 {
                     _world.SetComponent(entity, new AnimationIdx(animation!.Value.StartIdx));
                 }
-                else
+                else if (animation!.Value.EndIdx != idx.Value)
                 {
                     _world.SetComponent(entity, new AnimationIdx(idx.Value + 1));
                 }

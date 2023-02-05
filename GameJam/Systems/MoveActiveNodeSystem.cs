@@ -12,6 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using static GameJam.Config;
+
 namespace GameJam.Systems;
 
 public class MoveActiveNodeSystem : ISystem
@@ -78,7 +80,7 @@ public class MoveActiveNodeSystem : ISystem
                 .SelectMany(x => x)
                 .FirstOrDefault(x => x.Item2!.Value.Value.Equals(activeNode.Value.Value with
                 {
-                    X = activeNode.Value.Value.X + offset * 16
+                    X = activeNode.Value.Value.X + offset * PPU
                 }));
             
             if (something == null) return;
@@ -104,7 +106,7 @@ public class MoveActiveNodeSystem : ISystem
                 .SelectMany(x => x)
                 .FirstOrDefault(x => x.Item2!.Value.Value.Equals(activeNode.Value.Value with
                 {
-                    Y = activeNode.Value.Value.Y + offset * 16
+                    Y = activeNode.Value.Value.Y + offset * PPU
                 }));
 
             if (something == null) return;
