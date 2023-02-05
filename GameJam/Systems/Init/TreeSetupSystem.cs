@@ -11,10 +11,6 @@ namespace GameJam.Systems.Init;
 public class TreeSetupSystem : ISystem, IDisposable
 {
     public GamePhase Phase => GamePhase.Init;
-<<<<<<< HEAD
-=======
-
->>>>>>> df9a09a41e4cf0fe71efde4ed017fcd097ae846c
     private readonly IResourceManager _resources;
     private readonly SpriteSheet _spriteSheet;
     private readonly IWorld _world;
