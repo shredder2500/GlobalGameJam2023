@@ -13,6 +13,11 @@ public class ActiveSystem : ISystem
 {
     private IWorld _world;
 
+    public ActiveSystem(IWorld world)
+    {
+        _world = world;
+    }
+
     public ValueTask Execute(CancellationToken cancellationToken)
     {
         // Change selector node to active
