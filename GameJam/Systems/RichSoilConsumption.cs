@@ -49,7 +49,22 @@ public class RichSoilConsumption : ISystem, IDisposable
         {
             _world.RemoveComponent<RichSoil>(entity);
             _world.SetComponent(entity, _spriteSheet.GetSprite(0));
+            IncreaseScore(1);
+        }
 
+        void IncreaseScore(int amount)
+        {
+            var player = _world.GetEntityBuckets()
+                .Where(x => x.HasComponent<Score>())
+                .Select(x => x.GetIndices().Select(i => (x.GetEntity(i), x.GetComponent<Score>(i))))
+                .SelectMany(x => x)
+                .FirstOrDefault();
+
+            if (player.Item2 != null)
+            {
+                int currentScore = player.Item2.Value;
+                _world.SetComponent(player.Item1, new Score(currentScore + amount));
+            }
         }
 
         return ValueTask.CompletedTask;

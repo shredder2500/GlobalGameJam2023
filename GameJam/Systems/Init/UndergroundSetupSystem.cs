@@ -33,10 +33,11 @@ public class UndergroundSetupSystem : ISystem, IDisposable
         _spriteSheet = new(resources.Load<Texture>("sprite.stumpy-tileset"), new(320, 128),
         new(16, 16));
         _undergroundSprites = new (Sprite sprite, int chance, Action<Entity> onCreate)[] {
-                (_spriteSheet.GetSprite(4), 15, x => world.SetComponent(x, new RichSoil())), 
-                 (_spriteSheet.GetSprite(5), 50, x => world.SetComponent(x, new Water())), 
+                (_spriteSheet.GetSprite(4), 10, x => world.SetComponent(x, new RichSoil())), 
+                 (_spriteSheet.GetSprite(5), 40, x => world.SetComponent(x, new Water())), 
                  (_spriteSheet.GetSprite(7), 10, x => world.SetComponent(x, new Bug())), 
-                 (_spriteSheet.GetSprite(9), 25, x => world.SetComponent(x, new Bug()))
+                 (_spriteSheet.GetSprite(9), 20, x => world.SetComponent(x, new Bug())),
+                 (_spriteSheet.GetSprite(146), 20, x => world.SetComponent(x, new Stone()))
              }
             .OrderBy(x => x.Item2).ToArray();
     }
